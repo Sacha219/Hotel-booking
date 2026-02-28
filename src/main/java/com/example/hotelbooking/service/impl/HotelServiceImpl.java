@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -21,63 +21,51 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public HotelResponseDTO createHotel(HotelRequestDTO hotelRequestDTO) {
-
         Hotel hotel = hotelMapper.toEntity(hotelRequestDTO);
-
-        if (hotel.getAvailable() == null) {
-            hotel.setAvailable(true);
-        }
-
+        hotel.setAvailable(true);
         Hotel savedHotel = hotelRepository.save(hotel);
-
         return hotelMapper.toResponseDTO(savedHotel);
     }
 
     @Override
     public HotelResponseDTO getHotelById(Long id) {
-
         Hotel hotel = hotelRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Отель с ID " + id + " не найден"));
-
+                .orElseThrow(() -> new NoSuchElementException("Отель с идентификатором " + id + " не найден"));
         return hotelMapper.toResponseDTO(hotel);
     }
 
     @Override
     public List<HotelResponseDTO> getAllHotels() {
-
-        List<Hotel> hotels = hotelRepository.findAll();
-
-        return hotels.stream()
+        return hotelRepository.findAll().stream()
                 .map(hotelMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<HotelResponseDTO> getHotelsByCity(String city) {
         return hotelRepository.findByCity(city).stream()
                 .map(hotelMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<HotelResponseDTO> getHotelsByStars(Integer stars) {
         return hotelRepository.findByStars(stars).stream()
                 .map(hotelMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<HotelResponseDTO> getHotelsByCityAndStars(String city, Integer stars) {
         return hotelRepository.findByCityAndStars(city, stars).stream()
                 .map(hotelMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public HotelResponseDTO updateHotel(Long id, HotelRequestDTO hotelRequestDTO) {
-
         Hotel existingHotel = hotelRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Отель с ID " + id + " не найден"));
+                .orElseThrow(() -> new NoSuchElementException("Отель с идентификатором " + id + " не найден"));
 
         existingHotel.setName(hotelRequestDTO.getName());
         existingHotel.setAddress(hotelRequestDTO.getAddress());
@@ -92,17 +80,14 @@ public class HotelServiceImpl implements HotelService {
         }
 
         Hotel updatedHotel = hotelRepository.save(existingHotel);
-
         return hotelMapper.toResponseDTO(updatedHotel);
     }
 
     @Override
     public void deleteHotel(Long id) {
-
         if (!hotelRepository.existsById(id)) {
-            throw new RuntimeException("Отель с ID " + id + " не найден");
+            throw new NoSuchElementException("Отель с идентификатором " + id + " не найден");
         }
-
         hotelRepository.deleteById(id);
     }
 }
