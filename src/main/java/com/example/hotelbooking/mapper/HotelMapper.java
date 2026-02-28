@@ -40,8 +40,7 @@ public class HotelMapper {
         hotel.setStars(dto.getStars());
         hotel.setDescription(dto.getDescription());
         hotel.setPricePerNight(dto.getPricePerNight());
-        hotel.setAvailable(dto.getAvailable() != null ? dto.getAvailable() : true);
-
+        hotel.setAvailable(dto.getAvailable() == null || dto.getAvailable());
         return hotel;
     }
 }
