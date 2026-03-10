@@ -1,6 +1,5 @@
 package com.example.hotelbooking.service.impl;
 
-import com.example.hotelbooking.dto.HotelRequestDTO;
 import com.example.hotelbooking.dto.HotelResponseDTO;
 import com.example.hotelbooking.entity.Hotel;
 import com.example.hotelbooking.mapper.HotelMapper;
@@ -18,14 +17,6 @@ public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
-
-    @Override
-    public HotelResponseDTO createHotel(HotelRequestDTO hotelRequestDTO) {
-        Hotel hotel = hotelMapper.toEntity(hotelRequestDTO);
-        hotel.setAvailable(true);
-        Hotel savedHotel = hotelRepository.save(hotel);
-        return hotelMapper.toResponseDTO(savedHotel);
-    }
 
     @Override
     public HotelResponseDTO getHotelById(Long id) {
@@ -60,34 +51,5 @@ public class HotelServiceImpl implements HotelService {
         return hotelRepository.findByCityAndStars(city, stars).stream()
                 .map(hotelMapper::toResponseDTO)
                 .toList();
-    }
-
-    @Override
-    public HotelResponseDTO updateHotel(Long id, HotelRequestDTO hotelRequestDTO) {
-        Hotel existingHotel = hotelRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Отель с идентификатором " + id + " не найден"));
-
-        existingHotel.setName(hotelRequestDTO.getName());
-        existingHotel.setAddress(hotelRequestDTO.getAddress());
-        existingHotel.setCity(hotelRequestDTO.getCity());
-        existingHotel.setCountry(hotelRequestDTO.getCountry());
-        existingHotel.setStars(hotelRequestDTO.getStars());
-        existingHotel.setDescription(hotelRequestDTO.getDescription());
-        existingHotel.setPricePerNight(hotelRequestDTO.getPricePerNight());
-
-        if (hotelRequestDTO.getAvailable() != null) {
-            existingHotel.setAvailable(hotelRequestDTO.getAvailable());
-        }
-
-        Hotel updatedHotel = hotelRepository.save(existingHotel);
-        return hotelMapper.toResponseDTO(updatedHotel);
-    }
-
-    @Override
-    public void deleteHotel(Long id) {
-        if (!hotelRepository.existsById(id)) {
-            throw new NoSuchElementException("Отель с идентификатором " + id + " не найден");
-        }
-        hotelRepository.deleteById(id);
     }
 }

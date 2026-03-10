@@ -1,21 +1,15 @@
 package com.example.hotelbooking.controller;
 
-import com.example.hotelbooking.dto.HotelRequestDTO;
 import com.example.hotelbooking.dto.HotelResponseDTO;
 import com.example.hotelbooking.service.HotelService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @RestController
@@ -24,13 +18,6 @@ import java.util.List;
 public class HotelController {
 
     private final HotelService hotelService;
-
-    @PostMapping
-    public ResponseEntity<HotelResponseDTO> createHotel(
-            @Valid @RequestBody HotelRequestDTO hotelRequestDTO) {
-        HotelResponseDTO createdHotel = hotelService.createHotel(hotelRequestDTO);
-        return new ResponseEntity<>(createdHotel, HttpStatus.CREATED);
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<HotelResponseDTO> getHotelById(@PathVariable Long id) {
@@ -56,19 +43,5 @@ public class HotelController {
         }
 
         return ResponseEntity.ok(hotels);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<HotelResponseDTO> updateHotel(
-            @PathVariable Long id,
-            @Valid @RequestBody HotelRequestDTO hotelRequestDTO) {
-        HotelResponseDTO updatedHotel = hotelService.updateHotel(id, hotelRequestDTO);
-        return ResponseEntity.ok(updatedHotel);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteHotel(@PathVariable Long id) {
-        hotelService.deleteHotel(id);
-        return ResponseEntity.noContent().build();
     }
 }
