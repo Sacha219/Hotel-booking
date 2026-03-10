@@ -18,12 +18,12 @@ public class HotelRepository {
 
         Hotel hotel1 = new Hotel();
         hotel1.setId(1L);
-        hotel1.setName("Grand Hotel Moscow");
-        hotel1.setAddress("ул. Тверская, 10");
-        hotel1.setCity("Москва");
-        hotel1.setCountry("Россия");
+        hotel1.setName("Grand Hotel");
+        hotel1.setAddress("ул. Советская, 10");
+        hotel1.setCity("Минск");
+        hotel1.setCountry("Беларусь");
         hotel1.setStars(5);
-        hotel1.setDescription("Роскошный отель в центре Москвы");
+        hotel1.setDescription("Роскошный отель в центре Минска");
         hotel1.setPricePerNight(15000.0);
         hotel1.setAvailable(true);
         hotels.put(1L, hotel1);
@@ -44,7 +44,7 @@ public class HotelRepository {
         hotel3.setId(3L);
         hotel3.setName("Отель на Ленинском");
         hotel3.setAddress("Ленинский проспект, 45");
-        hotel3.setCity("Москва");
+        hotel3.setCity("Питер");
         hotel3.setCountry("Россия");
         hotel3.setStars(3);
         hotel3.setDescription("Бюджетный вариант рядом с метро");
