@@ -15,7 +15,7 @@ public class HotelRepository {
     private final Map<Long, Hotel> hotels = new ConcurrentHashMap<>();
 
     public HotelRepository() {
-        // Отель 1
+
         Hotel hotel1 = new Hotel();
         hotel1.setId(1L);
         hotel1.setName("Grand Hotel Moscow");
@@ -28,7 +28,6 @@ public class HotelRepository {
         hotel1.setAvailable(true);
         hotels.put(1L, hotel1);
 
-        // Отель 2
         Hotel hotel2 = new Hotel();
         hotel2.setId(2L);
         hotel2.setName("Бизнес Отель");
@@ -41,7 +40,6 @@ public class HotelRepository {
         hotel2.setAvailable(true);
         hotels.put(2L, hotel2);
 
-        // Отель 3
         Hotel hotel3 = new Hotel();
         hotel3.setId(3L);
         hotel3.setName("Отель на Ленинском");
