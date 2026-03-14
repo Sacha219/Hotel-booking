@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @RestController
@@ -19,10 +18,19 @@ public class HotelController {
 
     private final HotelService hotelService;
 
+    @GetMapping("/plain")
+    public ResponseEntity<List<HotelResponseDTO>> getAllHotelsPlain() {
+        return ResponseEntity.ok(hotelService.getAllHotelsPlain());
+    }
+
+    @GetMapping("/with-details")
+    public ResponseEntity<List<HotelResponseDTO>> getAllHotelsWithDetails() {
+        return ResponseEntity.ok(hotelService.getAllHotelsWithDetails());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<HotelResponseDTO> getHotelById(@PathVariable Long id) {
-        HotelResponseDTO hotel = hotelService.getHotelById(id);
-        return ResponseEntity.ok(hotel);
+        return ResponseEntity.ok(hotelService.getHotelById(id));
     }
 
     @GetMapping
@@ -39,7 +47,7 @@ public class HotelController {
         } else if (stars != null) {
             hotels = hotelService.getHotelsByStars(stars);
         } else {
-            hotels = hotelService.getAllHotels();
+            hotels = hotelService.getAllHotelsWithDetails();
         }
 
         return ResponseEntity.ok(hotels);

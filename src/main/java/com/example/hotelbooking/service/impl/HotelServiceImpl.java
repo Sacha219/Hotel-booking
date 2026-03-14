@@ -7,9 +7,10 @@ import com.example.hotelbooking.repository.HotelRepository;
 import com.example.hotelbooking.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class HotelServiceImpl implements HotelService {
     private final HotelMapper hotelMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public HotelResponseDTO getHotelById(Long id) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Отель с идентификатором " + id + " не найден"));
@@ -26,30 +28,50 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HotelResponseDTO> getAllHotels() {
         return hotelRepository.findAll().stream()
                 .map(hotelMapper::toResponseDTO)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HotelResponseDTO> getHotelsByCity(String city) {
-        return hotelRepository.findByCity(city).stream()
+        return hotelRepository.findByCityIgnoreCase(city).stream()
                 .map(hotelMapper::toResponseDTO)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HotelResponseDTO> getHotelsByStars(Integer stars) {
         return hotelRepository.findByStars(stars).stream()
                 .map(hotelMapper::toResponseDTO)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HotelResponseDTO> getHotelsByCityAndStars(String city, Integer stars) {
-        return hotelRepository.findByCityAndStars(city, stars).stream()
+        return hotelRepository.findByCityIgnoreCaseAndStars(city, stars).stream()
                 .map(hotelMapper::toResponseDTO)
-                .toList();
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<HotelResponseDTO> getAllHotelsPlain() {
+        return hotelRepository.findAllPlain().stream()
+                .map(hotelMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<HotelResponseDTO> getAllHotelsWithDetails() {
+        return hotelRepository.findAllWithDetails().stream()
+                .map(hotelMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 }

@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -19,41 +20,38 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "hotels")
+@Table(name = "rooms")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Hotel {
+public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(name = "room_number", nullable = false)
+    private String roomNumber;
 
-    private String address;
-    private String city;
-    private String country;
-    private Integer stars;
-
-    @Column(length = 1000)
-    private String description;
-
-    @Column(name = "price_per_night")
-    private Double pricePerNight;
-
+    private Integer floor;
+    private Integer capacity;
+    private String type;
+    private Double price;
     private Boolean available = true;
 
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Room> rooms = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "hotel_id", nullable = false)
+    private Hotel hotel;
 
     @ManyToMany
     @JoinTable(
-            name = "hotel_amenities",
-            joinColumns = @JoinColumn(name = "hotel_id"),
+            name = "room_amenities",
+            joinColumns = @JoinColumn(name = "room_id"),
             inverseJoinColumns = @JoinColumn(name = "amenity_id")
     )
     private Set<Amenity> amenities = new HashSet<>();
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Booking> bookings = new HashSet<>();
 }

@@ -4,7 +4,6 @@ import com.example.hotelbooking.dto.HotelResponseDTO;
 import java.util.List;
 
 public interface HotelService {
-
     HotelResponseDTO getHotelById(Long id);
 
     List<HotelResponseDTO> getAllHotels();
@@ -14,4 +13,8 @@ public interface HotelService {
     List<HotelResponseDTO> getHotelsByStars(Integer stars);
 
     List<HotelResponseDTO> getHotelsByCityAndStars(String city, Integer stars);
+
+    List<HotelResponseDTO> getAllHotelsPlain();
+
+    List<HotelResponseDTO> getAllHotelsWithDetails();
 }

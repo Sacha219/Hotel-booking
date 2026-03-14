@@ -9,16 +9,15 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HotelResponseDTO {
+public class RoomResponseDTO {
     private Long id;
-    private String name;
-    private String address;
-    private String city;
-    private String country;
-    private Integer stars;
-    private String description;
-    private Double pricePerNight;
+    private String roomNumber;
+    private Integer floor;
+    private Integer capacity;
+    private String type;
+    private Double price;
     private Boolean available;
-    private List<Long> roomIds;
+    private Long hotelId;
+    private String hotelName;
     private List<Long> amenityIds;
 }
