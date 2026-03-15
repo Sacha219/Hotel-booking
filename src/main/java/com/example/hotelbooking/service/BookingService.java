@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +42,7 @@ public class BookingService {
     public List<BookingResponseDTO> findByGuestId(Long guestId) {
         return bookingRepository.findByGuestId(guestId).stream()
                 .map(BookingMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
