@@ -6,6 +6,7 @@ import com.example.hotelbooking.service.BookingService;
 import com.example.hotelbooking.service.GuestService;
 import com.example.hotelbooking.service.HotelService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +43,9 @@ public class DemoController {
             guestService.createWithoutTransaction(dto);
             return ResponseEntity.ok("Данные сохранились? Проверь БД");
         } catch (Exception e) {
-            return ResponseEntity.ok("Ошибка: " + e.getMessage() + " - данные могли сохраниться частично");
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ошибка: " + e.getMessage() + " - данные могли сохраниться частично");
         }
     }
 
@@ -52,7 +55,9 @@ public class DemoController {
             guestService.createWithTransaction(dto);
             return ResponseEntity.ok("Это сообщение не должно появиться");
         } catch (Exception e) {
-            return ResponseEntity.ok("Ошибка: " + e.getMessage() + " - всё откатилось, данные не сохранились");
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ошибка: " + e.getMessage() + " - всё откатилось, данные не сохранились");
         }
     }
 }
