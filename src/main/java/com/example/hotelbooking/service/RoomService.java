@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class RoomService {
     public List<RoomResponseDTO> findAll() {
         return roomRepository.findAll().stream()
                 .map(RoomMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -41,14 +40,14 @@ public class RoomService {
     public List<RoomResponseDTO> findByHotelId(Long hotelId) {
         return roomRepository.findByHotelId(hotelId).stream()
                 .map(RoomMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
     public List<RoomResponseDTO> findAvailableRooms(Long hotelId, LocalDate checkIn, LocalDate checkOut) {
         return roomRepository.findAvailableRooms(hotelId, checkIn, checkOut).stream()
                 .map(RoomMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
@@ -66,7 +65,7 @@ public class RoomService {
     @Transactional
     public RoomResponseDTO update(Long id, RoomRequestDTO dto) {
         Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Room not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Room not found with id:" + id));
 
         room.setRoomNumber(dto.getRoomNumber());
         room.setFloor(dto.getFloor());
@@ -82,7 +81,7 @@ public class RoomService {
     @Transactional
     public void delete(Long id) {
         if (!roomRepository.existsById(id)) {
-            throw new NoSuchElementException("Room not found with id: " + id);
+            throw new NoSuchElementException("Room not found with id:  " + id);
         }
         roomRepository.deleteById(id);
     }

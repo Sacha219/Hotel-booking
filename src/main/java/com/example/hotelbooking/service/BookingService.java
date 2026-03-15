@@ -29,7 +29,7 @@ public class BookingService {
     public List<BookingResponseDTO> findAll() {
         return bookingRepository.findAll().stream()
                 .map(BookingMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -49,7 +49,7 @@ public class BookingService {
     @Transactional
     public BookingResponseDTO create(BookingRequestDTO dto) {
         Room room = roomRepository.findById(dto.getRoomId())
-                .orElseThrow(() -> new NoSuchElementException("Room not found with id: " + dto.getRoomId()));
+                .orElseThrow(() -> new NoSuchElementException("Room not found with id:" + dto.getRoomId()));
 
         Guest guest = guestRepository.findById(dto.getGuestId())
                 .orElseThrow(() -> new NoSuchElementException("Guest not found with id: " + dto.getGuestId()));
@@ -83,7 +83,7 @@ public class BookingService {
     @Transactional
     public BookingResponseDTO updateStatus(Long id, String status) {
         Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Booking not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Booking not found with id:  " + id));
 
         booking.setStatus(status);
         Booking updatedBooking = bookingRepository.save(booking);
@@ -93,7 +93,7 @@ public class BookingService {
     @Transactional
     public void cancel(Long id) {
         Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Booking not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Booking not found  with id: " + id));
 
         booking.setStatus("CANCELLED");
         bookingRepository.save(booking);

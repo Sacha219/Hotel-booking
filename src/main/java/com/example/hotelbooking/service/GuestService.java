@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class GuestService {
     public List<GuestResponseDTO> findAll() {
         return guestRepository.findAll().stream()
                 .map(GuestMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -48,29 +47,27 @@ public class GuestService {
         }
 
         Guest guest = GuestMapper.toEntity(dto);
-        Guest savedGuest = guestRepository.save(guest);
-        return GuestMapper.toResponseDTO(savedGuest);
+        guestRepository.save(guest);
+        return GuestMapper.toResponseDTO(guest);
     }
 
     public GuestResponseDTO createWithoutTransaction(GuestRequestDTO dto) {
         Guest guest = GuestMapper.toEntity(dto);
-        Guest savedGuest = guestRepository.save(guest);
-
+        guestRepository.save(guest);
         throw new TransactionDemoException("Ошибка после сохранения гостя (БЕЗ @Transactional)");
     }
 
     @Transactional
     public GuestResponseDTO createWithTransaction(GuestRequestDTO dto) {
         Guest guest = GuestMapper.toEntity(dto);
-        Guest savedGuest = guestRepository.save(guest);
-
+        guestRepository.save(guest);
         throw new TransactionDemoException("Ошибка после сохранения гостя (С @Transactional)");
     }
 
     @Transactional
     public GuestResponseDTO update(Long id, GuestRequestDTO dto) {
         Guest guest = guestRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Guest not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Guest not found with id:" + id));
 
         guest.setFirstName(dto.getFirstName());
         guest.setLastName(dto.getLastName());
@@ -83,14 +80,14 @@ public class GuestService {
             guest.setEmail(dto.getEmail());
         }
 
-        Guest updatedGuest = guestRepository.save(guest);
-        return GuestMapper.toResponseDTO(updatedGuest);
+        guestRepository.save(guest);
+        return GuestMapper.toResponseDTO(guest);
     }
 
     @Transactional
     public void delete(Long id) {
         if (!guestRepository.existsById(id)) {
-            throw new NoSuchElementException("Guest not found with id: " + id);
+            throw new NoSuchElementException("Guest not found with id:  " + id);
         }
         guestRepository.deleteById(id);
     }

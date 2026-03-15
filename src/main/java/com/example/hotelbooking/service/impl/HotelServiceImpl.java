@@ -32,7 +32,7 @@ public class HotelServiceImpl implements HotelService {
     public List<HotelResponseDTO> getAllHotels() {
         return hotelRepository.findAll().stream()
                 .map(hotelMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class HotelServiceImpl implements HotelService {
     public List<HotelResponseDTO> getHotelsByCity(String city) {
         return hotelRepository.findByCityIgnoreCase(city).stream()
                 .map(hotelMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -48,7 +48,7 @@ public class HotelServiceImpl implements HotelService {
     public List<HotelResponseDTO> getHotelsByStars(Integer stars) {
         return hotelRepository.findByStars(stars).stream()
                 .map(hotelMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -56,7 +56,7 @@ public class HotelServiceImpl implements HotelService {
     public List<HotelResponseDTO> getHotelsByCityAndStars(String city, Integer stars) {
         return hotelRepository.findByCityIgnoreCaseAndStars(city, stars).stream()
                 .map(hotelMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -64,7 +64,7 @@ public class HotelServiceImpl implements HotelService {
     public List<HotelResponseDTO> getAllHotelsPlain() {
         return hotelRepository.findAllPlain().stream()
                 .map(hotelMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -72,6 +72,6 @@ public class HotelServiceImpl implements HotelService {
     public List<HotelResponseDTO> getAllHotelsWithDetails() {
         return hotelRepository.findAllWithDetails().stream()
                 .map(hotelMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

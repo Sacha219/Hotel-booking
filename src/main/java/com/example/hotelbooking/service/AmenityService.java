@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +21,7 @@ public class AmenityService {
     public List<AmenityDTO> findAll() {
         return amenityRepository.findAll().stream()
                 .map(AmenityMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -53,7 +52,7 @@ public class AmenityService {
     @Transactional
     public AmenityDTO update(Long id, AmenityDTO dto) {
         Amenity amenity = amenityRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Amenity not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Amenity not found with id:" + id));
 
         amenity.setName(dto.getName());
         amenity.setDescription(dto.getDescription());
@@ -66,7 +65,7 @@ public class AmenityService {
     @Transactional
     public void delete(Long id) {
         if (!amenityRepository.existsById(id)) {
-            throw new NoSuchElementException("Amenity not found with id: " + id);
+            throw new NoSuchElementException("Amenity not  found with id: " + id);
         }
         amenityRepository.deleteById(id);
     }

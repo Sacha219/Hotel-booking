@@ -51,7 +51,7 @@ public class RoomMapper {
         room.setCapacity(dto.getCapacity());
         room.setType(dto.getType());
         room.setPrice(dto.getPrice());
-        room.setAvailable(dto.getAvailable() != null ? dto.getAvailable() : true);
+        room.setAvailable(dto.getAvailable() == null || dto.getAvailable());
 
         return room;
     }
