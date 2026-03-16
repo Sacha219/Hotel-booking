@@ -73,4 +73,13 @@ public class HotelServiceImpl implements HotelService {
                 .map(hotelMapper::toResponseDTO)
                 .toList();
     }
+
+    @Override
+    @Transactional
+    public void deleteHotel(Long id) {
+        if (!hotelRepository.existsById(id)) {
+            throw new NoSuchElementException("Отель с идентификатором " + id + " не найден");
+        }
+        hotelRepository.deleteById(id);
+    }
 }

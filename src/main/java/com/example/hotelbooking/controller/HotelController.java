@@ -4,6 +4,7 @@ import com.example.hotelbooking.dto.HotelResponseDTO;
 import com.example.hotelbooking.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,5 +52,11 @@ public class HotelController {
         }
 
         return ResponseEntity.ok(hotels);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteHotel(@PathVariable Long id) {
+        hotelService.deleteHotel(id);
+        return ResponseEntity.noContent().build();
     }
 }
