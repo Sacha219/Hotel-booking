@@ -1,5 +1,6 @@
 package com.example.hotelbooking.service;
 
+import com.example.hotelbooking.dto.HotelRequestDTO;
 import com.example.hotelbooking.dto.HotelResponseDTO;
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface HotelService {
     List<HotelResponseDTO> getAllHotelsWithDetails();
 
     void deleteHotel(Long id);
+
+    HotelResponseDTO createHotel(HotelRequestDTO hotelRequestDTO);
 }

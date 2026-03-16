@@ -1,5 +1,6 @@
 package com.example.hotelbooking.service.impl;
 
+import com.example.hotelbooking.dto.HotelRequestDTO;
 import com.example.hotelbooking.dto.HotelResponseDTO;
 import com.example.hotelbooking.entity.Hotel;
 import com.example.hotelbooking.mapper.HotelMapper;
@@ -81,5 +82,14 @@ public class HotelServiceImpl implements HotelService {
             throw new NoSuchElementException("Отель с идентификатором " + id + " не найден");
         }
         hotelRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public HotelResponseDTO createHotel(HotelRequestDTO hotelRequestDTO) {
+        Hotel hotel = hotelMapper.toEntity(hotelRequestDTO);
+        hotel.setAvailable(true);
+        Hotel savedHotel = hotelRepository.save(hotel);
+        return hotelMapper.toResponseDTO(savedHotel);
     }
 }
