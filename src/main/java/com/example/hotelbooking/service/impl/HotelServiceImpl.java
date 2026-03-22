@@ -92,4 +92,22 @@ public class HotelServiceImpl implements HotelService {
         Hotel savedHotel = hotelRepository.save(hotel);
         return hotelMapper.toResponseDTO(savedHotel);
     }
+
+
+    @Override
+    @Transactional
+    public HotelResponseDTO updateHotel(Long id, HotelRequestDTO hotelRequestDTO) {
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Отель с идентификатором " + id + " не найден"));
+
+        hotel.setName(hotelRequestDTO.getName());
+        hotel.setAddress(hotelRequestDTO.getAddress());
+        hotel.setCity(hotelRequestDTO.getCity());
+        hotel.setStars(hotelRequestDTO.getStars());
+        hotel.setDescription(hotelRequestDTO.getDescription());
+        hotel.setAvailable(hotelRequestDTO.getAvailable() != null ? hotelRequestDTO.getAvailable() : hotel.getAvailable());
+
+        Hotel updatedHotel = hotelRepository.save(hotel);
+        return hotelMapper.toResponseDTO(updatedHotel);
+    }
 }
