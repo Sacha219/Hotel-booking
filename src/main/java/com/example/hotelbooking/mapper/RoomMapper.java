@@ -4,6 +4,7 @@ import com.example.hotelbooking.dto.RoomRequestDTO;
 import com.example.hotelbooking.dto.RoomResponseDTO;
 import com.example.hotelbooking.entity.Room;
 import com.example.hotelbooking.entity.Amenity;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class RoomMapper {
@@ -19,7 +20,7 @@ public class RoomMapper {
 
         RoomResponseDTO dto = new RoomResponseDTO();
         dto.setId(room.getId());
-        dto.setRoomNumber(room.getRoomNumber());
+        dto.setNumber(room.getNumber());
         dto.setFloor(room.getFloor());
         dto.setCapacity(room.getCapacity());
         dto.setType(room.getType());
@@ -31,10 +32,16 @@ public class RoomMapper {
             dto.setHotelName(room.getHotel().getName());
         }
 
-        if (room.getAmenities() != null && !room.getAmenities().isEmpty()) {
-            dto.setAmenityIds(room.getAmenities().stream()
-                    .map(Amenity::getId)
-                    .collect(Collectors.toList()));
+        try {
+            if (room.getAmenities() != null && !room.getAmenities().isEmpty()) {
+                dto.setAmenityIds(room.getAmenities().stream()
+                        .map(Amenity::getId)
+                        .collect(Collectors.toList()));
+            } else {
+                dto.setAmenityIds(new ArrayList<>());
+            }
+        } catch (Exception e) {
+            dto.setAmenityIds(new ArrayList<>());
         }
 
         return dto;
@@ -46,7 +53,7 @@ public class RoomMapper {
         }
 
         Room room = new Room();
-        room.setRoomNumber(dto.getRoomNumber());
+        room.setNumber(dto.getNumber());
         room.setFloor(dto.getFloor());
         room.setCapacity(dto.getCapacity());
         room.setType(dto.getType());

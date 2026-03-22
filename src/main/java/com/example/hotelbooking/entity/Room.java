@@ -16,28 +16,34 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "rooms")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "rooms")
 public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "room_number", nullable = false)
-    private String roomNumber;
+    @Column(name = "number", nullable = false)
+    private String number;
 
     private Integer floor;
+
     private Integer capacity;
+
     private String type;
+
     private Double price;
+
     private Boolean available = true;
 
     @ManyToOne
@@ -50,8 +56,10 @@ public class Room {
             joinColumns = @JoinColumn(name = "room_id"),
             inverseJoinColumns = @JoinColumn(name = "amenity_id")
     )
+    @ToString.Exclude
     private Set<Amenity> amenities = new HashSet<>();
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private Set<Booking> bookings = new HashSet<>();
 }

@@ -22,10 +22,8 @@ public class HotelMapper {
         dto.setName(hotel.getName());
         dto.setAddress(hotel.getAddress());
         dto.setCity(hotel.getCity());
-        dto.setCountry(hotel.getCountry());
         dto.setStars(hotel.getStars());
         dto.setDescription(hotel.getDescription());
-        dto.setPricePerNight(hotel.getPricePerNight());
         dto.setAvailable(hotel.getAvailable());
 
         try {
@@ -64,10 +62,8 @@ public class HotelMapper {
         hotel.setName(dto.getName());
         hotel.setAddress(dto.getAddress());
         hotel.setCity(dto.getCity());
-        hotel.setCountry(dto.getCountry());
         hotel.setStars(dto.getStars());
         hotel.setDescription(dto.getDescription());
-        hotel.setPricePerNight(dto.getPricePerNight());
         hotel.setAvailable(dto.getAvailable() == null || dto.getAvailable());
 
         return hotel;

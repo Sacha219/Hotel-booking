@@ -10,12 +10,13 @@ import com.example.hotelbooking.repository.BookingRepository;
 import com.example.hotelbooking.repository.GuestRepository;
 import com.example.hotelbooking.repository.HotelRepository;
 import com.example.hotelbooking.repository.RoomRepository;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,7 +32,7 @@ public class DataInitializer implements CommandLineRunner {
     private final BookingRepository bookingRepository;
 
     @Override
-    public void run(@NonNull String... args) {
+    public void run(@Nonnull String... args) {
 
         if (hotelRepository.count() == 0) {
             createAmenities();
@@ -50,26 +51,26 @@ public class DataInitializer implements CommandLineRunner {
         amenityRepository.save(wifi);
 
         Amenity parking = new Amenity();
-        parking.setName("Parking");
-        parking.setDescription("Бесплатная парковка");
+        parking.setName("Парковка");
+        parking.setDescription("Бесплатная охраняемая парковка");
         parking.setIcon("parking");
         amenityRepository.save(parking);
 
         Amenity pool = new Amenity();
-        pool.setName("Pool");
-        pool.setDescription("Открытый бассейн");
+        pool.setName("Бассейн");
+        pool.setDescription("Крытый подогреваемый бассейн");
         pool.setIcon("pool");
         amenityRepository.save(pool);
 
         Amenity gym = new Amenity();
-        gym.setName("Gym");
-        gym.setDescription("Тренажерный зал");
+        gym.setName("Фитнес-центр");
+        gym.setDescription("Современный тренажерный зал");
         gym.setIcon("gym");
         amenityRepository.save(gym);
 
         Amenity breakfast = new Amenity();
-        breakfast.setName("Breakfast");
-        breakfast.setDescription("Завтрак включён");
+        breakfast.setName("Завтрак");
+        breakfast.setDescription("Завтрак включён в стоимость");
         breakfast.setIcon("breakfast");
         amenityRepository.save(breakfast);
     }
@@ -77,23 +78,19 @@ public class DataInitializer implements CommandLineRunner {
     private void createHotels() {
         Hotel hotel1 = new Hotel();
         hotel1.setName("Grand Hotel Minsk");
-        hotel1.setAddress("ул. Советская, 10");
+        hotel1.setAddress("пр-т Независимости, 15");
         hotel1.setCity("Минск");
-        hotel1.setCountry("Беларусь");
         hotel1.setStars(5);
-        hotel1.setDescription("Роскошный отель в центре Минска");
-        hotel1.setPricePerNight(15000.0);
+        hotel1.setDescription("Роскошный отель в центре Минска с видом на проспект");
         hotel1.setAvailable(true);
         hotelRepository.save(hotel1);
 
         Hotel hotel2 = new Hotel();
         hotel2.setName("Бизнес Отель");
         hotel2.setAddress("ул. Новый Арбат, 15");
-        hotel2.setCity("Кёльн");
-        hotel2.setCountry("Германия");
+        hotel2.setCity("Москва");
         hotel2.setStars(4);
         hotel2.setDescription("Удобный отель для деловых поездок");
-        hotel2.setPricePerNight(8000.0);
         hotel2.setAvailable(true);
         hotelRepository.save(hotel2);
 
@@ -101,10 +98,8 @@ public class DataInitializer implements CommandLineRunner {
         hotel3.setName("Питер Отель");
         hotel3.setAddress("Невский проспект, 20");
         hotel3.setCity("Санкт-Петербург");
-        hotel3.setCountry("Россия");
         hotel3.setStars(4);
         hotel3.setDescription("Отель в культурной столице");
-        hotel3.setPricePerNight(9000.0);
         hotel3.setAvailable(true);
         hotelRepository.save(hotel3);
     }
@@ -116,11 +111,25 @@ public class DataInitializer implements CommandLineRunner {
         for (Hotel hotel : hotels) {
             for (int i = 1; i <= 5; i++) {
                 Room room = new Room();
-                room.setRoomNumber(String.valueOf(100 + i));
+                room.setNumber(String.valueOf(100 + i));
                 room.setFloor(1);
                 room.setCapacity(2);
                 room.setType(i % 2 == 0 ? "STANDARD" : "DELUXE");
-                room.setPrice(hotel.getPricePerNight() * (0.8 + i * 0.1));
+
+                switch (hotel.getName()) {
+                    case "Grand Hotel Minsk":
+                        room.setPrice(150.0 + i * 30);
+                        break;
+                    case "Бизнес Отель":
+                        room.setPrice(100.0 + i * 20);
+                        break;
+                    case "Питер Отель":
+                        room.setPrice(90.0 + i * 25);
+                        break;
+                    default:
+                        room.setPrice(80.0 + i * 15);
+                }
+
                 room.setAvailable(true);
                 room.setHotel(hotel);
 
@@ -139,26 +148,26 @@ public class DataInitializer implements CommandLineRunner {
 
     private void createGuests() {
         Guest guest1 = new Guest();
-        guest1.setFirstName("Иван");
-        guest1.setLastName("Петров");
-        guest1.setEmail("ivan@email.com");
-        guest1.setPhone("+7-999-123-45-67");
+        guest1.setFirstName("Александра");
+        guest1.setLastName("Лукашевич");
+        guest1.setEmail("sasha@email.com");
+        guest1.setPhone("+375-29-123-45-67");
         guest1.setRegistrationDate(LocalDate.now().minusMonths(1));
         guestRepository.save(guest1);
 
         Guest guest2 = new Guest();
-        guest2.setFirstName("Мария");
-        guest2.setLastName("Иванова");
-        guest2.setEmail("maria@email.com");
-        guest2.setPhone("+7-999-765-43-21");
+        guest2.setFirstName("Иван");
+        guest2.setLastName("Петров");
+        guest2.setEmail("ivan.petrov@email.com");
+        guest2.setPhone("+375-33-456-78-90");
         guest2.setRegistrationDate(LocalDate.now().minusWeeks(2));
         guestRepository.save(guest2);
 
         Guest guest3 = new Guest();
-        guest3.setFirstName("Алексей");
-        guest3.setLastName("Сидоров");
-        guest3.setEmail("alex@email.com");
-        guest3.setPhone("+7-999-555-55-55");
+        guest3.setFirstName("Мария");
+        guest3.setLastName("Иванова");
+        guest3.setEmail("maria.ivanova@email.com");
+        guest3.setPhone("+375-44-789-01-23");
         guest3.setRegistrationDate(LocalDate.now().minusDays(5));
         guestRepository.save(guest3);
     }
@@ -168,34 +177,43 @@ public class DataInitializer implements CommandLineRunner {
         List<Room> rooms = roomRepository.findAll();
 
         if (!rooms.isEmpty() && !guests.isEmpty()) {
+
             Booking booking1 = new Booking();
             booking1.setCheckInDate(LocalDate.now().plusDays(10));
             booking1.setCheckOutDate(LocalDate.now().plusDays(15));
             booking1.setStatus("CONFIRMED");
             booking1.setRoom(rooms.get(0));
             booking1.setGuest(guests.get(0));
-            booking1.setTotalPrice(rooms.get(0).getPrice() * 5);
+
+            long nights1 = ChronoUnit.DAYS.between(booking1.getCheckInDate(), booking1.getCheckOutDate());
+            booking1.setTotalPrice(rooms.get(0).getPrice() * nights1);
             bookingRepository.save(booking1);
 
             if (rooms.size() > 1 && guests.size() > 1) {
+
                 Booking booking2 = new Booking();
                 booking2.setCheckInDate(LocalDate.now().plusDays(20));
                 booking2.setCheckOutDate(LocalDate.now().plusDays(25));
                 booking2.setStatus("CONFIRMED");
                 booking2.setRoom(rooms.get(1));
                 booking2.setGuest(guests.get(1));
-                booking2.setTotalPrice(rooms.get(1).getPrice() * 5);
+
+                long nights2 = ChronoUnit.DAYS.between(booking2.getCheckInDate(), booking2.getCheckOutDate());
+                booking2.setTotalPrice(rooms.get(1).getPrice() * nights2);
                 bookingRepository.save(booking2);
             }
 
             if (rooms.size() > 2 && guests.size() > 2) {
+
                 Booking booking3 = new Booking();
                 booking3.setCheckInDate(LocalDate.now().plusDays(5));
                 booking3.setCheckOutDate(LocalDate.now().plusDays(7));
                 booking3.setStatus("PENDING");
                 booking3.setRoom(rooms.get(2));
                 booking3.setGuest(guests.get(2));
-                booking3.setTotalPrice(rooms.get(2).getPrice() * 2);
+
+                long nights3 = ChronoUnit.DAYS.between(booking3.getCheckInDate(), booking3.getCheckOutDate());
+                booking3.setTotalPrice(rooms.get(2).getPrice() * nights3);
                 bookingRepository.save(booking3);
             }
         }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomRequestDTO {
-    private String roomNumber;
+    private String number;
     private Integer floor;
     private Integer capacity;
     private String type;

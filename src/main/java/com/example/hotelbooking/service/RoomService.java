@@ -67,7 +67,7 @@ public class RoomService {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Room not found with id:" + id));
 
-        room.setRoomNumber(dto.getRoomNumber());
+        room.setNumber(dto.getNumber());
         room.setFloor(dto.getFloor());
         room.setCapacity(dto.getCapacity());
         room.setType(dto.getType());

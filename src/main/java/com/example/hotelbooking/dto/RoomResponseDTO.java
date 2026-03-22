@@ -3,7 +3,6 @@ package com.example.hotelbooking.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 @Data
@@ -11,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RoomResponseDTO {
     private Long id;
-    private String roomNumber;
+    private String number;
     private Integer floor;
     private Integer capacity;
     private String type;

@@ -24,7 +24,7 @@ public class BookingMapper {
 
         if (booking.getRoom() != null) {
             dto.setRoomId(booking.getRoom().getId());
-            dto.setRoomNumber(booking.getRoom().getRoomNumber());
+            dto.setRoomNumber(booking.getRoom().getNumber());
         }
 
         if (booking.getGuest() != null) {

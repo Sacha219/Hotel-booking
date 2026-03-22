@@ -15,15 +15,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "hotels")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "hotels")
 public class Hotel {
 
     @Id
@@ -34,19 +36,18 @@ public class Hotel {
     private String name;
 
     private String address;
+
     private String city;
-    private String country;
+
     private Integer stars;
 
     @Column(length = 1000)
     private String description;
 
-    @Column(name = "price_per_night")
-    private Double pricePerNight;
-
     private Boolean available = true;
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private Set<Room> rooms = new HashSet<>();
 
     @ManyToMany
@@ -55,5 +56,6 @@ public class Hotel {
             joinColumns = @JoinColumn(name = "hotel_id"),
             inverseJoinColumns = @JoinColumn(name = "amenity_id")
     )
+    @ToString.Exclude
     private Set<Amenity> amenities = new HashSet<>();
 }
