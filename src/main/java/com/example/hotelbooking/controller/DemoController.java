@@ -41,8 +41,7 @@ public class DemoController {
             guestService.createWithoutTransaction(dto);
             return ResponseEntity.ok("Данные сохранились? Проверь БД");
         } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Ошибка: " + e.getMessage() + " - данные могли сохраниться частично");
         }
     }
@@ -53,8 +52,7 @@ public class DemoController {
             guestService.createWithTransaction(dto);
             return ResponseEntity.ok("Это сообщение не должно появиться");
         } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Ошибка: " + e.getMessage() + " - всё откатилось, данные не сохранились");
         }
     }

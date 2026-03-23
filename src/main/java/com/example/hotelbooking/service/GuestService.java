@@ -51,14 +51,14 @@ public class GuestService {
         return GuestMapper.toResponseDTO(guest);
     }
 
-    public GuestResponseDTO createWithoutTransaction(GuestRequestDTO dto) {
+    public void createWithoutTransaction(GuestRequestDTO dto) {
         Guest guest = GuestMapper.toEntity(dto);
         guestRepository.save(guest);
         throw new TransactionDemoException("Ошибка после сохранения гостя (БЕЗ @Transactional)");
     }
 
     @Transactional
-    public GuestResponseDTO createWithTransaction(GuestRequestDTO dto) {
+    public void createWithTransaction(GuestRequestDTO dto) {
         Guest guest = GuestMapper.toEntity(dto);
         guestRepository.save(guest);
         throw new TransactionDemoException("Ошибка после сохранения гостя (С @Transactional)");
