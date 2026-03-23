@@ -2,7 +2,6 @@ package com.example.hotelbooking.controller;
 
 import com.example.hotelbooking.dto.GuestRequestDTO;
 import com.example.hotelbooking.dto.HotelResponseDTO;
-import com.example.hotelbooking.service.BookingService;
 import com.example.hotelbooking.service.GuestService;
 import com.example.hotelbooking.service.HotelService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,6 @@ import java.util.List;
 public class DemoController {
 
     private final HotelService hotelService;
-    private final BookingService bookingService;
     private final GuestService guestService;
 
     @GetMapping("/nplus1/problem")
