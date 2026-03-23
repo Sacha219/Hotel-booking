@@ -38,16 +38,11 @@ public class HotelMapper {
             dto.setRoomIds(new ArrayList<>());
         }
 
-        try {
-            if (hotel.getAmenities() != null && !hotel.getAmenities().isEmpty()) {
-                dto.setAmenityIds(hotel.getAmenities().stream()
-                        .map(Amenity::getId)
-                        .collect(Collectors.toList()));
-            } else {
-                dto.setAmenityIds(new ArrayList<>());
-            }
-        } catch (Exception e) {
-            dto.setAmenityIds(new ArrayList<>());
+        if (hotel.getRooms() != null) {
+            dto.setRoomIds(hotel.getRooms().stream().map(Room::getId).toList());
+        }
+        if (hotel.getAmenities() != null) {
+            dto.setAmenityIds(hotel.getAmenities().stream().map(Amenity::getId).toList());
         }
 
         return dto;
