@@ -1,23 +1,31 @@
 package com.example.hotelbooking.service;
 
+import com.example.hotelbooking.dto.BookingRequestDTO;
 import com.example.hotelbooking.dto.GuestRequestDTO;
 import com.example.hotelbooking.dto.GuestResponseDTO;
+import com.example.hotelbooking.entity.Booking;
 import com.example.hotelbooking.entity.Guest;
 import com.example.hotelbooking.exception.TransactionDemoException;
+import com.example.hotelbooking.mapper.BookingMapper;
 import com.example.hotelbooking.mapper.GuestMapper;
+import com.example.hotelbooking.repository.BookingRepository;
 import com.example.hotelbooking.repository.GuestRepository;
+import com.example.hotelbooking.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.time.temporal.ChronoUnit;
 
 @Service
 @RequiredArgsConstructor
 public class GuestService {
 
     private final GuestRepository guestRepository;
+    private final BookingRepository bookingRepository;
+    private final RoomRepository roomRepository;
 
     @Transactional(readOnly = true)
     public List<GuestResponseDTO> findAll() {
@@ -51,17 +59,45 @@ public class GuestService {
         return GuestMapper.toResponseDTO(guest);
     }
 
-    public void createWithoutTransaction(GuestRequestDTO dto) {
-        Guest guest = GuestMapper.toEntity(dto);
+    public void createGuestAndBookingWithoutTransaction(GuestRequestDTO guestDto, BookingRequestDTO bookingDto) {
+
+        Guest guest = GuestMapper.toEntity(guestDto);
         guestRepository.save(guest);
-        throw new TransactionDemoException("Ошибка после сохранения гостя (БЕЗ @Transactional)");
+
+        Booking booking = BookingMapper.toEntity(bookingDto);
+        booking.setGuest(guest);
+
+        var room = roomRepository.findById(bookingDto.getRoomId())
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+        booking.setRoom(room);
+
+        long nights = ChronoUnit.DAYS.between(bookingDto.getCheckInDate(), bookingDto.getCheckOutDate());
+        booking.setTotalPrice(room.getPrice() * nights);
+
+        bookingRepository.save(booking);
+
+        throw new TransactionDemoException("Ошибка после сохранения гостя и бронирования (БЕЗ @Transactional)");
     }
 
     @Transactional
-    public void createWithTransaction(GuestRequestDTO dto) {
-        Guest guest = GuestMapper.toEntity(dto);
+    public void createGuestAndBookingWithTransaction(GuestRequestDTO guestDto, BookingRequestDTO bookingDto) {
+
+        Guest guest = GuestMapper.toEntity(guestDto);
         guestRepository.save(guest);
-        throw new TransactionDemoException("Ошибка после сохранения гостя (С @Transactional)");
+
+        Booking booking = BookingMapper.toEntity(bookingDto);
+        booking.setGuest(guest);
+
+        var room = roomRepository.findById(bookingDto.getRoomId())
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+        booking.setRoom(room);
+
+        long nights = ChronoUnit.DAYS.between(bookingDto.getCheckInDate(), bookingDto.getCheckOutDate());
+        booking.setTotalPrice(room.getPrice() * nights);
+
+        bookingRepository.save(booking);
+
+        throw new TransactionDemoException("Ошибка после сохранения гостя и бронирования (С @Transactional)");
     }
 
     @Transactional
