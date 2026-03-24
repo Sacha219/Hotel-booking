@@ -2,6 +2,7 @@ package com.example.hotelbooking.service;
 
 import com.example.hotelbooking.dto.AmenityDTO;
 import com.example.hotelbooking.entity.Amenity;
+import com.example.hotelbooking.entity.Room;
 import com.example.hotelbooking.mapper.AmenityMapper;
 import com.example.hotelbooking.repository.AmenityRepository;
 import lombok.RequiredArgsConstructor;
@@ -64,9 +65,14 @@ public class AmenityService {
 
     @Transactional
     public void delete(Long id) {
-        if (!amenityRepository.existsById(id)) {
-            throw new NoSuchElementException("Amenity not  found with id: " + id);
+        Amenity amenity = amenityRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Amenity not found"));
+
+        for (Room room : amenity.getRooms()) {
+            room.getAmenities().remove(amenity);
         }
-        amenityRepository.deleteById(id);
+        amenity.getRooms().clear();
+
+        amenityRepository.delete(amenity);
     }
 }
