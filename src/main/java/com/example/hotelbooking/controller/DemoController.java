@@ -1,7 +1,6 @@
 package com.example.hotelbooking.controller;
 
-import com.example.hotelbooking.dto.BookingRequestDTO;
-import com.example.hotelbooking.dto.GuestRequestDTO;
+import com.example.hotelbooking.dto.GuestWithBookingsDTO;
 import com.example.hotelbooking.dto.HotelResponseDTO;
 import com.example.hotelbooking.service.GuestService;
 import com.example.hotelbooking.service.HotelService;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/demo")
@@ -37,48 +35,22 @@ public class DemoController {
         return ResponseEntity.ok(hotels);
     }
 
-    @PostMapping("/guest-booking/without-tx")
-    public ResponseEntity<String> createGuestAndBookingWithoutTx(@RequestBody Map<String, Object> payload) {
+    @PostMapping("/guest-bookings/without-tx")
+    public ResponseEntity<String> createGuestWithBookingsWithoutTx(@RequestBody GuestWithBookingsDTO dto) {
         try {
-            GuestRequestDTO guestDto = new GuestRequestDTO();
-            guestDto.setFirstName((String) payload.get("firstName"));
-            guestDto.setLastName((String) payload.get("lastName"));
-            guestDto.setEmail((String) payload.get("email"));
-            guestDto.setPhone((String) payload.get("phone"));
-
-            BookingRequestDTO bookingDto = new BookingRequestDTO();
-            bookingDto.setRoomId(Long.valueOf(payload.get("roomId").toString()));
-            bookingDto.setCheckInDate(java.time.LocalDate.parse((String) payload.get("checkIn")));
-            bookingDto.setCheckOutDate(java.time.LocalDate.parse((String) payload.get("checkOut")));
-            bookingDto.setStatus("CONFIRMED");
-
-            guestService.createGuestAndBookingWithoutTransaction(guestDto, bookingDto);
-
-            return ResponseEntity.ok("Данные успешно сохранены (не должно появиться)");
+            guestService.createGuestWithBookingsWithoutTx(dto);
+            return ResponseEntity.ok("Данные сохранены ");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Ошибка: " + e.getMessage() + " — гость мог сохраниться, бронирование — нет");
+                    .body("Ошибка: " + e.getMessage() + " — гость сохранился, бронирования — нет");
         }
     }
 
-    @PostMapping("/guest-booking/with-tx")
-    public ResponseEntity<String> createGuestAndBookingWithTx(@RequestBody Map<String, Object> payload) {
+    @PostMapping("/guest-bookings/with-tx")
+    public ResponseEntity<String> createGuestWithBookingsWithTx(@RequestBody GuestWithBookingsDTO dto) {
         try {
-            GuestRequestDTO guestDto = new GuestRequestDTO();
-            guestDto.setFirstName((String) payload.get("firstName"));
-            guestDto.setLastName((String) payload.get("lastName"));
-            guestDto.setEmail((String) payload.get("email"));
-            guestDto.setPhone((String) payload.get("phone"));
-
-            BookingRequestDTO bookingDto = new BookingRequestDTO();
-            bookingDto.setRoomId(Long.valueOf(payload.get("roomId").toString()));
-            bookingDto.setCheckInDate(java.time.LocalDate.parse((String) payload.get("checkIn")));
-            bookingDto.setCheckOutDate(java.time.LocalDate.parse((String) payload.get("checkOut")));
-            bookingDto.setStatus("CONFIRMED");
-
-            guestService.createGuestAndBookingWithTransaction(guestDto, bookingDto);
-
-            return ResponseEntity.ok("Данные успешно сохранены (не должно появиться)");
+            guestService.createGuestWithBookingsWithTx(dto);
+            return ResponseEntity.ok("Данные сохранены  ");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Ошибка: " + e.getMessage() + " — всё откатилось, данные не сохранились");

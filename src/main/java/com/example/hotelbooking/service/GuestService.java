@@ -1,12 +1,13 @@
 package com.example.hotelbooking.service;
 
 import com.example.hotelbooking.dto.BookingRequestDTO;
+import com.example.hotelbooking.dto.GuestWithBookingsDTO;
 import com.example.hotelbooking.dto.GuestRequestDTO;
 import com.example.hotelbooking.dto.GuestResponseDTO;
 import com.example.hotelbooking.entity.Booking;
 import com.example.hotelbooking.entity.Guest;
+import com.example.hotelbooking.entity.Room;
 import com.example.hotelbooking.exception.TransactionDemoException;
-import com.example.hotelbooking.mapper.BookingMapper;
 import com.example.hotelbooking.mapper.GuestMapper;
 import com.example.hotelbooking.repository.BookingRepository;
 import com.example.hotelbooking.repository.GuestRepository;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.time.temporal.ChronoUnit;
@@ -59,47 +61,6 @@ public class GuestService {
         return GuestMapper.toResponseDTO(guest);
     }
 
-    public void createGuestAndBookingWithoutTransaction(GuestRequestDTO guestDto, BookingRequestDTO bookingDto) {
-
-        Guest guest = GuestMapper.toEntity(guestDto);
-        guestRepository.save(guest);
-
-        Booking booking = BookingMapper.toEntity(bookingDto);
-        booking.setGuest(guest);
-
-        var room = roomRepository.findById(bookingDto.getRoomId())
-                .orElseThrow(() -> new RuntimeException("Room not found"));
-        booking.setRoom(room);
-
-        long nights = ChronoUnit.DAYS.between(bookingDto.getCheckInDate(), bookingDto.getCheckOutDate());
-        booking.setTotalPrice(room.getPrice() * nights);
-
-        bookingRepository.save(booking);
-
-        throw new TransactionDemoException("Ошибка после сохранения гостя и бронирования (БЕЗ @Transactional)");
-    }
-
-    @Transactional
-    public void createGuestAndBookingWithTransaction(GuestRequestDTO guestDto, BookingRequestDTO bookingDto) {
-
-        Guest guest = GuestMapper.toEntity(guestDto);
-        guestRepository.save(guest);
-
-        Booking booking = BookingMapper.toEntity(bookingDto);
-        booking.setGuest(guest);
-
-        var room = roomRepository.findById(bookingDto.getRoomId())
-                .orElseThrow(() -> new RuntimeException("Room not found"));
-        booking.setRoom(room);
-
-        long nights = ChronoUnit.DAYS.between(bookingDto.getCheckInDate(), bookingDto.getCheckOutDate());
-        booking.setTotalPrice(room.getPrice() * nights);
-
-        bookingRepository.save(booking);
-
-        throw new TransactionDemoException("Ошибка после сохранения гостя и бронирования (С @Transactional)");
-    }
-
     @Transactional
     public GuestResponseDTO update(Long id, GuestRequestDTO dto) {
         Guest guest = guestRepository.findById(id)
@@ -126,5 +87,113 @@ public class GuestService {
             throw new NoSuchElementException("Guest not found with id:  " + id);
         }
         guestRepository.deleteById(id);
+    }
+
+    @Transactional
+    public GuestResponseDTO createGuestWithBookings(GuestWithBookingsDTO dto) {
+
+        Guest guest = new Guest();
+        guest.setFirstName(dto.getFirstName());
+        guest.setLastName(dto.getLastName());
+        guest.setEmail(dto.getEmail());
+        guest.setPhone(dto.getPhone());
+        guest.setRegistrationDate(java.time.LocalDate.now());
+
+        guest = guestRepository.save(guest);
+
+        List<Booking> bookings = new ArrayList<>();
+        for (BookingRequestDTO bookingDTO : dto.getBookings()) {
+            Room room = roomRepository.findById(bookingDTO.getRoomId())
+                    .orElseThrow(() -> new RuntimeException("Room not found"));
+
+            Booking booking = new Booking();
+            booking.setCheckInDate(bookingDTO.getCheckInDate());
+            booking.setCheckOutDate(bookingDTO.getCheckOutDate());
+            booking.setStatus(bookingDTO.getStatus() != null ? bookingDTO.getStatus() : "PENDING");
+            booking.setGuest(guest);
+            booking.setRoom(room);
+
+            long nights = ChronoUnit.DAYS.between(bookingDTO.getCheckInDate(), bookingDTO.getCheckOutDate());
+            booking.setTotalPrice(room.getPrice() * nights);
+
+            bookings.add(booking);
+        }
+
+        bookingRepository.saveAll(bookings);
+
+        guest.getBookings().addAll(bookings);
+
+        return GuestMapper.toResponseDTO(guest);
+    }
+
+    public void createGuestWithBookingsWithoutTx(GuestWithBookingsDTO dto) {
+
+        Guest guest = new Guest();
+        guest.setFirstName(dto.getFirstName());
+        guest.setLastName(dto.getLastName());
+        guest.setEmail(dto.getEmail());
+        guest.setPhone(dto.getPhone());
+        guest.setRegistrationDate(java.time.LocalDate.now());
+        guest = guestRepository.save(guest);
+
+        List<Booking> bookings = new ArrayList<>();
+        for (BookingRequestDTO bookingDTO : dto.getBookings()) {
+            Room room = roomRepository.findById(bookingDTO.getRoomId())
+                    .orElseThrow(() -> new RuntimeException("Room not found"));
+
+            Booking booking = new Booking();
+            booking.setCheckInDate(bookingDTO.getCheckInDate());
+            booking.setCheckOutDate(bookingDTO.getCheckOutDate());
+            booking.setStatus(bookingDTO.getStatus() != null ? bookingDTO.getStatus() : "PENDING");
+            booking.setGuest(guest);
+            booking.setRoom(room);
+
+            long nights = ChronoUnit.DAYS.between(bookingDTO.getCheckInDate(), bookingDTO.getCheckOutDate());
+            booking.setTotalPrice(room.getPrice() * nights);
+
+            bookings.add(booking);
+        }
+
+        bookingRepository.saveAll(bookings);
+
+        guest.getBookings().addAll(bookings);
+
+        throw new TransactionDemoException("Ошибка после сохранения гостя и бронирований (БЕЗ @Transactional)");
+    }
+
+    @Transactional
+    public void createGuestWithBookingsWithTx(GuestWithBookingsDTO dto) {
+
+        Guest guest = new Guest();
+        guest.setFirstName(dto.getFirstName());
+        guest.setLastName(dto.getLastName());
+        guest.setEmail(dto.getEmail());
+        guest.setPhone(dto.getPhone());
+        guest.setRegistrationDate(java.time.LocalDate.now());
+        guest = guestRepository.save(guest);
+
+        List<Booking> bookings = new ArrayList<>();
+        for (BookingRequestDTO bookingDTO : dto.getBookings()) {
+            Room room = roomRepository.findById(bookingDTO.getRoomId())
+                    .orElseThrow(() -> new RuntimeException("Room not found"));
+
+            Booking booking = new Booking();
+            booking.setCheckInDate(bookingDTO.getCheckInDate());
+            booking.setCheckOutDate(bookingDTO.getCheckOutDate());
+            booking.setStatus(bookingDTO.getStatus() != null ? bookingDTO.getStatus() : "PENDING");
+            booking.setGuest(guest);
+            booking.setRoom(room);
+
+            long nights = ChronoUnit.DAYS.between(bookingDTO.getCheckInDate(), bookingDTO.getCheckOutDate());
+            booking.setTotalPrice(room.getPrice() * nights);
+
+            bookings.add(booking);
+        }
+
+        bookingRepository.saveAll(bookings);
+
+        guest.getBookings().addAll(bookings);
+
+        throw new TransactionDemoException("Ошибка после сохранения гостя и бронирований (С @Transactional)");
     }
 }
