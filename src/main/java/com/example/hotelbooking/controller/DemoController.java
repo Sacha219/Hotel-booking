@@ -45,15 +45,4 @@ public class DemoController {
                     .body("Ошибка: " + e.getMessage() + " — гость сохранился, бронирования — нет");
         }
     }
-
-    @PostMapping("/guest-bookings/with-tx")
-    public ResponseEntity<String> createGuestWithBookingsWithTx(@RequestBody GuestWithBookingsDTO dto) {
-        try {
-            guestService.createGuestWithBookingsWithTx(dto);
-            return ResponseEntity.ok("Данные сохранены  ");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Ошибка: " + e.getMessage() + " — всё откатилось, данные не сохранились");
-        }
-    }
 }

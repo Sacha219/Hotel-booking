@@ -139,12 +139,12 @@ public class GuestService {
         List<Booking> bookings = new ArrayList<>();
         for (BookingRequestDTO bookingDTO : dto.getBookings()) {
             Room room = roomRepository.findById(bookingDTO.getRoomId())
-                    .orElseThrow(() -> new RuntimeException("Room not found"));
+                    .orElseThrow(() -> new RuntimeException(" Room not found"));
 
             Booking booking = new Booking();
             booking.setCheckInDate(bookingDTO.getCheckInDate());
             booking.setCheckOutDate(bookingDTO.getCheckOutDate());
-            booking.setStatus(bookingDTO.getStatus() != null ? bookingDTO.getStatus() : "PENDING");
+            booking.setStatus(bookingDTO.getStatus() != null ? bookingDTO.getStatus() : "PENDING" );
             booking.setGuest(guest);
             booking.setRoom(room);
 
@@ -158,42 +158,6 @@ public class GuestService {
 
         guest.getBookings().addAll(bookings);
 
-        throw new TransactionDemoException("Ошибка после сохранения гостя и бронирований (БЕЗ @Transactional)");
-    }
-
-    @Transactional
-    public void createGuestWithBookingsWithTx(GuestWithBookingsDTO dto) {
-
-        Guest guest = new Guest();
-        guest.setFirstName(dto.getFirstName());
-        guest.setLastName(dto.getLastName());
-        guest.setEmail(dto.getEmail());
-        guest.setPhone(dto.getPhone());
-        guest.setRegistrationDate(java.time.LocalDate.now());
-        guest = guestRepository.save(guest);
-
-        List<Booking> bookings = new ArrayList<>();
-        for (BookingRequestDTO bookingDTO : dto.getBookings()) {
-            Room room = roomRepository.findById(bookingDTO.getRoomId())
-                    .orElseThrow(() -> new RuntimeException("Room not found"));
-
-            Booking booking = new Booking();
-            booking.setCheckInDate(bookingDTO.getCheckInDate());
-            booking.setCheckOutDate(bookingDTO.getCheckOutDate());
-            booking.setStatus(bookingDTO.getStatus() != null ? bookingDTO.getStatus() : "PENDING");
-            booking.setGuest(guest);
-            booking.setRoom(room);
-
-            long nights = ChronoUnit.DAYS.between(bookingDTO.getCheckInDate(), bookingDTO.getCheckOutDate());
-            booking.setTotalPrice(room.getPrice() * nights);
-
-            bookings.add(booking);
-        }
-
-        bookingRepository.saveAll(bookings);
-
-        guest.getBookings().addAll(bookings);
-
-        throw new TransactionDemoException("Ошибка после сохранения гостя и бронирований (С @Transactional)");
+        throw new TransactionDemoException("Ошибка после сохранения гостя и бронирований (БЕЗ @Transactional) ");
     }
 }
