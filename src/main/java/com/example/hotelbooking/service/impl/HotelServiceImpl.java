@@ -6,18 +6,24 @@ import com.example.hotelbooking.entity.Hotel;
 import com.example.hotelbooking.mapper.HotelMapper;
 import com.example.hotelbooking.repository.HotelRepository;
 import com.example.hotelbooking.service.HotelService;
+import com.example.hotelbooking.service.HotelCachingService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
+    private final HotelCachingService hotelCachingService;
 
     @Override
     @Transactional(readOnly = true)
@@ -76,12 +82,9 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    @Transactional
-    public void deleteHotel(Long id) {
-        if (!hotelRepository.existsById(id)) {
-            throw new NoSuchElementException("Отель с идентификатором " + id + " не найден");
-        }
-        hotelRepository.deleteById(id);
+    @Transactional(readOnly = true)
+    public Page<HotelResponseDTO> findHotelsByRoomTypeAndPrice(String roomType, Double minPrice, int page, int size) {
+        return hotelCachingService.findHotelsByRoomTypeAndPriceCached(roomType, minPrice, page, size);
     }
 
     @Override
@@ -90,9 +93,12 @@ public class HotelServiceImpl implements HotelService {
         Hotel hotel = hotelMapper.toEntity(hotelRequestDTO);
         hotel.setAvailable(true);
         Hotel savedHotel = hotelRepository.save(hotel);
+
+        hotelCachingService.invalidateAll();
+        log.info("Кэш инвалидирован после создания отеля");
+
         return hotelMapper.toResponseDTO(savedHotel);
     }
-
 
     @Override
     @Transactional
@@ -108,6 +114,22 @@ public class HotelServiceImpl implements HotelService {
         hotel.setAvailable(hotelRequestDTO.getAvailable() != null ? hotelRequestDTO.getAvailable() : hotel.getAvailable());
 
         Hotel updatedHotel = hotelRepository.save(hotel);
+
+        hotelCachingService.invalidateByHotelId(id);
+        log.info("Кэш инвалидирован после обновления отеля ID: {}", id);
+
         return hotelMapper.toResponseDTO(updatedHotel);
+    }
+
+    @Override
+    @Transactional
+    public void deleteHotel(Long id) {
+        if (!hotelRepository.existsById(id)) {
+            throw new NoSuchElementException("Отель с идентификатором " + id + " не найден");
+        }
+        hotelRepository.deleteById(id);
+
+        hotelCachingService.invalidateByHotelId(id);
+        log.info("Кэш инвалидирован после удаления отеля ID: {}", id);
     }
 }

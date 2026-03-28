@@ -2,8 +2,10 @@ package com.example.hotelbooking.controller;
 
 import com.example.hotelbooking.dto.HotelRequestDTO;
 import com.example.hotelbooking.dto.HotelResponseDTO;
+import com.example.hotelbooking.service.HotelCachingService;
 import com.example.hotelbooking.service.HotelService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +26,7 @@ import java.util.List;
 public class HotelController {
 
     private final HotelService hotelService;
+    private final HotelCachingService hotelCachingService;
 
     @PostMapping
     public ResponseEntity<HotelResponseDTO> createHotel(@RequestBody HotelRequestDTO hotelRequestDTO) {
@@ -75,5 +78,33 @@ public class HotelController {
     public ResponseEntity<Void> deleteHotel(@PathVariable Long id) {
         hotelService.deleteHotel(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Page<HotelResponseDTO>> filterHotelsByRoomTypeAndPrice(
+            @RequestParam String roomType,
+            @RequestParam Double minPrice,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<HotelResponseDTO> result = hotelService.findHotelsByRoomTypeAndPrice(roomType, minPrice, page, size);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/filter/native")
+    public ResponseEntity<Page<HotelResponseDTO>> filterHotelsByRoomTypeAndPriceNative(
+            @RequestParam String roomType,
+            @RequestParam Double minPrice,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<HotelResponseDTO> result = hotelCachingService.findHotelsByRoomTypeAndPriceNative(roomType, minPrice, page, size);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/cache/clear")
+    public ResponseEntity<String> clearCache() {
+        hotelCachingService.invalidateAll();
+        return ResponseEntity.ok("Кэш очищен");
     }
 }

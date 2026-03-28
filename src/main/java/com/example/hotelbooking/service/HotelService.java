@@ -3,6 +3,7 @@ package com.example.hotelbooking.service;
 import com.example.hotelbooking.dto.HotelRequestDTO;
 import com.example.hotelbooking.dto.HotelResponseDTO;
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface HotelService {
     HotelResponseDTO getHotelById(Long id);
@@ -24,4 +25,6 @@ public interface HotelService {
     void deleteHotel(Long id);
 
     HotelResponseDTO createHotel(HotelRequestDTO hotelRequestDTO);
+
+    Page<HotelResponseDTO> findHotelsByRoomTypeAndPrice(String roomType, Double minPrice, int page, int size);
 }
