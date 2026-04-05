@@ -79,7 +79,6 @@ public class GlobalExceptionHandler {
 
         String userMessage = "Неверный формат запроса";
 
-        // Проверяем, связана ли ошибка с парсингом даты
         if (exception.getCause() instanceof DateTimeParseException) {
             userMessage = "Некорректная дата. Пожалуйста, используйте формат ГГГГ-ММ-ДД и проверьте, что дата существует (например, 31 февраля не существует)";
         } else if (exception.getMessage().contains("LocalDate")) {
