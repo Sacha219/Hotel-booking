@@ -16,15 +16,11 @@ public interface HotelService {
 
     List<HotelResponseDTO> getHotelsByCityAndStars(String city, Integer stars);
 
-    List<HotelResponseDTO> getAllHotelsPlain();
-
-    List<HotelResponseDTO> getAllHotelsWithDetails();
-
-    HotelResponseDTO updateHotel(Long id, HotelRequestDTO dto);
-
     void deleteHotel(Long id);
 
     HotelResponseDTO createHotel(HotelRequestDTO hotelRequestDTO);
+
+    HotelResponseDTO updateHotel(Long id, HotelRequestDTO dto);
 
     Page<HotelResponseDTO> findHotelsByRoomTypeAndPrice(String roomType, Double minPrice, int page, int size);
 }

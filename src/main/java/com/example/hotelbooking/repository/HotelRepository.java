@@ -22,11 +22,10 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
     List<Hotel> findByCityIgnoreCaseAndStars(String city, Integer stars);
 
-    @Query("SELECT h FROM Hotel h")
-    List<Hotel> findAllPlain();
-
-    @Query("SELECT DISTINCT h FROM Hotel h LEFT JOIN FETCH h.rooms LEFT JOIN FETCH h.amenities")
-    List<Hotel> findAllWithDetails();
+    @Override
+    @Nonnull
+    @EntityGraph(attributePaths = {"rooms", "amenities"})
+    List<Hotel> findAll();
 
     @Override
     @Nonnull

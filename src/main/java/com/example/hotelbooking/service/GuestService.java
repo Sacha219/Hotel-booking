@@ -7,13 +7,13 @@ import com.example.hotelbooking.dto.GuestResponseDTO;
 import com.example.hotelbooking.entity.Booking;
 import com.example.hotelbooking.entity.Guest;
 import com.example.hotelbooking.entity.Room;
-import com.example.hotelbooking.exception.TransactionDemoException;
 import com.example.hotelbooking.mapper.GuestMapper;
 import com.example.hotelbooking.repository.BookingRepository;
 import com.example.hotelbooking.repository.GuestRepository;
 import com.example.hotelbooking.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,13 +55,13 @@ public class GuestService {
 
     @Transactional
     public GuestResponseDTO create(GuestRequestDTO dto) {
-        if (guestRepository.existsByEmailIgnoreCase(dto.getEmail())) {
-            throw new IllegalArgumentException("Guest with email " + dto.getEmail() + " already exists");
-        }
-
         Guest guest = GuestMapper.toEntity(dto);
-        Guest savedGuest = guestRepository.save(guest);
-        return GuestMapper.toResponseDTO(savedGuest);
+        try {
+            Guest savedGuest = guestRepository.save(guest);
+            return GuestMapper.toResponseDTO(savedGuest);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Guest with email " + dto.getEmail() + " already exists");
+        }
     }
 
     @Transactional
@@ -132,10 +132,4 @@ public class GuestService {
         return GuestMapper.toResponseDTO(guest);
     }
 
-    public void createGuestWithBookingsWithoutTx(GuestWithBookingsDTO dto) {
-        Guest guest = createGuestEntity(dto);
-        List<Booking> bookings = createBookings(guest, dto);
-        guest.getBookings().addAll(bookings);
-        throw new TransactionDemoException("Ошибка после сохранения гостя и бронирований (БЕЗ @Transactional)");
-    }
 }

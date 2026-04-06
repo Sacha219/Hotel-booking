@@ -40,18 +40,6 @@ public class HotelController {
         return new ResponseEntity<>(createdHotel, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Получить все отели (без оптимизации)", description = "Демонстрация проблемы N+1")
-    @GetMapping("/plain")
-    public ResponseEntity<List<HotelResponseDTO>> getAllHotelsPlain() {
-        return ResponseEntity.ok(hotelService.getAllHotelsPlain());
-    }
-
-    @Operation(summary = "Получить все отели с деталями", description = "Демонстрация решения N+1")
-    @GetMapping("/with-details")
-    public ResponseEntity<List<HotelResponseDTO>> getAllHotelsWithDetails() {
-        return ResponseEntity.ok(hotelService.getAllHotelsWithDetails());
-    }
-
     @Operation(summary = "Получить отель по ID", description = "Возвращает отель по его идентификатору")
     @GetMapping("/{id}")
     public ResponseEntity<HotelResponseDTO> getHotelById(
@@ -74,7 +62,7 @@ public class HotelController {
         } else if (stars != null) {
             hotels = hotelService.getHotelsByStars(stars);
         } else {
-            hotels = hotelService.getAllHotelsWithDetails();
+            hotels = hotelService.getAllHotels();
         }
 
         return ResponseEntity.ok(hotels);

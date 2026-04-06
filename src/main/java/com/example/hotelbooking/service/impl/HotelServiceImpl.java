@@ -67,22 +67,6 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<HotelResponseDTO> getAllHotelsPlain() {
-        return hotelRepository.findAllPlain().stream()
-                .map(hotelMapper::toResponseDTO)
-                .toList();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<HotelResponseDTO> getAllHotelsWithDetails() {
-        return hotelRepository.findAllWithDetails().stream()
-                .map(hotelMapper::toResponseDTO)
-                .toList();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public Page<HotelResponseDTO> findHotelsByRoomTypeAndPrice(String roomType, Double minPrice, int page, int size) {
         return hotelCachingService.findHotelsByRoomTypeAndPriceCached(roomType, minPrice, page, size);
     }

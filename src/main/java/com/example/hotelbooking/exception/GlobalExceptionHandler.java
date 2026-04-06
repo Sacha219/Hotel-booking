@@ -4,6 +4,7 @@ import com.example.hotelbooking.dto.ErrorDto;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -104,5 +105,26 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorDto> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
+        log.error("Ошибка целостности данных: {}", exception.getMessage());
+
+        String userMessage = "Нарушение уникальности данных";
+
+        if (exception.getMessage().contains("email")) {
+            userMessage = "Гость с таким email уже существует. Пожалуйста, используйте другой email.";
+        } else if (exception.getMessage().contains("name")) {
+            userMessage = "Запись с таким названием уже существует.";
+        }
+
+        ErrorDto error = new ErrorDto(
+                "Конфликт данных",
+                userMessage,
+                HttpStatus.CONFLICT.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 }
