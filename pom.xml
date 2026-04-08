@@ -128,7 +128,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-
             <!-- JACOCO (ПОКРЫТИЕ) -->
             <plugin>
                 <groupId>org.jacoco</groupId>
