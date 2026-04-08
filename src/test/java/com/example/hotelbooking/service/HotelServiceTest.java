@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -213,10 +214,9 @@ class HotelServiceTest {
 
         when(hotelRepository.findByNameIgnoreCase("Second")).thenReturn(Optional.of(new Hotel()));
 
-        assertThatThrownBy(() -> hotelService.createHotelsBulkWithoutTransaction(List.of(request1, request2)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("уже существует");
-        verify(hotelCachingService, never()).invalidateAll();
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> hotelService.createHotelsBulkWithoutTransaction(List.of(request1, request2)))
+                .withMessageContaining("уже существует");
 
         verify(hotelRepository, times(1)).save(hotel1);
         verify(hotelCachingService, never()).invalidateAll();
