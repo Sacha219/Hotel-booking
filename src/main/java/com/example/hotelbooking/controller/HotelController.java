@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @Tag(name = "Управление отелями", description = "Методы для работы с отелями")
@@ -117,5 +117,19 @@ public class HotelController {
     public ResponseEntity<String> clearCache() {
         hotelCachingService.invalidateAll();
         return ResponseEntity.ok("Кэш очищен");
+    }
+
+    @Operation(summary = "Массовое создание отелей С транзакцией")
+    @PostMapping("/bulk")
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<HotelResponseDTO> createHotelsBulk(@Valid @RequestBody List<HotelRequestDTO> requests) {
+        return hotelService.createHotelsBulk(requests);
+    }
+
+    @Operation(summary = "Массовое создание отелей БЕЗ транзакции (демонстрация частичного сохранения)")
+    @PostMapping("/bulk-without-tx")
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<HotelResponseDTO> createHotelsBulkWithoutTransaction(@Valid @RequestBody List<HotelRequestDTO> requests) {
+        return hotelService.createHotelsBulkWithoutTransaction(requests);
     }
 }

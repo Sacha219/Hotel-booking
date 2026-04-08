@@ -23,4 +23,8 @@ public interface HotelService {
     HotelResponseDTO updateHotel(Long id, HotelRequestDTO dto);
 
     Page<HotelResponseDTO> findHotelsByRoomTypeAndPrice(String roomType, Double minPrice, int page, int size);
+
+    List<HotelResponseDTO> createHotelsBulk(List<HotelRequestDTO> requests);
+
+    List<HotelResponseDTO> createHotelsBulkWithoutTransaction(List<HotelRequestDTO> requests);
 }

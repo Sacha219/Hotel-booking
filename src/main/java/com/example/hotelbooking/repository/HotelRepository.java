@@ -55,4 +55,6 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     @EntityGraph(attributePaths = {"rooms", "amenities"})
     @Query("SELECT h FROM Hotel h WHERE h.id IN :ids")
     List<Hotel> findAllWithDetailsByIds(@Param("ids") List<Long> ids);
+
+    Optional<Hotel> findByNameIgnoreCase(String name);
 }

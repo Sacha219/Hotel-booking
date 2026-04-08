@@ -13,8 +13,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -115,5 +117,61 @@ public class HotelServiceImpl implements HotelService {
 
         hotelCachingService.invalidateByHotelId(id);
         log.info("Кэш инвалидирован после удаления отеля ID: {}", id);
+    }
+
+    @Override
+    @Transactional
+    public List<HotelResponseDTO> createHotelsBulk(List<HotelRequestDTO> requests) {
+        log.info("Создание {} отелей С транзакцией", requests.size());
+
+        long distinctCount = requests.stream()
+                .map(HotelRequestDTO::getName)
+                .distinct()
+                .count();
+
+        if (distinctCount != requests.size()) {
+            throw new IllegalArgumentException("В списке запроса есть дубликаты названий отелей");
+        }
+
+        for (HotelRequestDTO request : requests) {
+            checkNameUniqueness(request.getName());
+        }
+
+        List<Hotel> hotels = requests.stream()
+                .map(hotelMapper::toEntity)
+                .toList();
+
+        List<Hotel> saved = hotelRepository.saveAll(hotels);
+
+        return saved.stream()
+                .map(hotelMapper::toResponseDTO)
+                .toList();
+    }
+
+    private void checkNameUniqueness(String name) {
+        Optional<Hotel> existing = hotelRepository.findByNameIgnoreCase(name);
+        if (existing.isPresent()) {
+            throw new IllegalArgumentException("Отель с названием '" + name + "' уже существует");
+        }
+    }
+
+    @Override
+    public List<HotelResponseDTO> createHotelsBulkWithoutTransaction(List<HotelRequestDTO> requests) {
+        List<HotelResponseDTO> result = new ArrayList<>();
+
+        for (HotelRequestDTO request : requests) {
+
+            Optional<Hotel> existing = hotelRepository.findByNameIgnoreCase(request.getName());
+            if (existing.isPresent()) {
+                throw new IllegalArgumentException("Отель с названием '" + request.getName() + "' уже существует");
+            }
+
+            Hotel hotel = hotelMapper.toEntity(request);
+            hotel.setAvailable(true);
+            Hotel saved = hotelRepository.save(hotel);
+            result.add(hotelMapper.toResponseDTO(saved));
+        }
+        hotelCachingService.invalidateAll();
+        return result;
     }
 }
