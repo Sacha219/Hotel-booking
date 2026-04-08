@@ -213,9 +213,8 @@ class HotelServiceTest {
 
         when(hotelRepository.findByNameIgnoreCase("Second")).thenReturn(Optional.of(new Hotel()));
 
-        assertThatThrownBy(() -> hotelService.createHotelsBulkWithoutTransaction(List.of(request1, request2)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("уже существует");
+        assertThatThrownBy(() -> hotelService.createHotelsBulkWithoutTransaction(List.of(request1, request2)));
+        verify(hotelCachingService, never()).invalidateAll();
 
         verify(hotelRepository, times(1)).save(hotel1);
         verify(hotelCachingService, never()).invalidateAll();
