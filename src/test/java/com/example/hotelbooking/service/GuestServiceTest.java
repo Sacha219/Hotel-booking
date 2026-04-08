@@ -4,7 +4,6 @@ import com.example.hotelbooking.dto.*;
 import com.example.hotelbooking.entity.Booking;
 import com.example.hotelbooking.entity.Guest;
 import com.example.hotelbooking.entity.Room;
-import com.example.hotelbooking.mapper.GuestMapper;
 import com.example.hotelbooking.repository.BookingRepository;
 import com.example.hotelbooking.repository.GuestRepository;
 import com.example.hotelbooking.repository.RoomRepository;

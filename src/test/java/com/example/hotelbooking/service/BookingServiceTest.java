@@ -5,7 +5,6 @@ import com.example.hotelbooking.dto.BookingResponseDTO;
 import com.example.hotelbooking.entity.Booking;
 import com.example.hotelbooking.entity.Guest;
 import com.example.hotelbooking.entity.Room;
-import com.example.hotelbooking.mapper.BookingMapper;
 import com.example.hotelbooking.repository.BookingRepository;
 import com.example.hotelbooking.repository.GuestRepository;
 import com.example.hotelbooking.repository.RoomRepository;

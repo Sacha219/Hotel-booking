@@ -4,7 +4,6 @@ import com.example.hotelbooking.dto.RoomRequestDTO;
 import com.example.hotelbooking.dto.RoomResponseDTO;
 import com.example.hotelbooking.entity.Hotel;
 import com.example.hotelbooking.entity.Room;
-import com.example.hotelbooking.mapper.RoomMapper;
 import com.example.hotelbooking.repository.HotelRepository;
 import com.example.hotelbooking.repository.RoomRepository;
 import org.junit.jupiter.api.BeforeEach;

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +45,8 @@ class HotelCachingServiceTest {
 
     @BeforeEach
     void setUp() {
+        cachingService.init();
+
         hotel = new Hotel();
         hotel.setId(1L);
         hotel.setName("Test Hotel");
@@ -51,6 +54,23 @@ class HotelCachingServiceTest {
         responseDTO = new HotelResponseDTO();
         responseDTO.setId(1L);
         responseDTO.setName("Test Hotel");
+    }
+
+    @Test
+    void findHotelsByRoomTypeAndPrice_ShouldCallRepositoryAndMapResult() {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("name").ascending());
+        Page<Hotel> hotelPage = new PageImpl<>(List.of(hotel), pageable, 1);
+        when(hotelRepository.findHotelsByRoomTypeAndPrice(eq("DELUXE"), eq(100.0), any(Pageable.class)))
+                .thenReturn(hotelPage);
+        when(hotelMapper.toResponseDTO(hotel)).thenReturn(responseDTO);
+
+        Page<HotelResponseDTO> result = cachingService.findHotelsByRoomTypeAndPrice("DELUXE", 100.0, 0, 10);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getId()).isEqualTo(1L);
+        verify(hotelRepository).findHotelsByRoomTypeAndPrice(eq("DELUXE"), eq(100.0), any(Pageable.class));
+        verify(hotelMapper).toResponseDTO(hotel);
     }
 
     @Test
@@ -70,7 +90,7 @@ class HotelCachingServiceTest {
     void findHotelsByRoomTypeAndPriceCached_ShouldFetchAndCache_WhenMiss() {
         HotelSearchKey key = new HotelSearchKey("DELUXE", 100.0, null, 0, 10, "name");
         when(hotelCache.get(key)).thenReturn(null);
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("name").ascending());
         Page<Hotel> hotelPage = new PageImpl<>(List.of(hotel), pageable, 1);
         when(hotelRepository.findHotelsByRoomTypeAndPrice(eq("DELUXE"), eq(100.0), any(Pageable.class)))
                 .thenReturn(hotelPage);
@@ -92,41 +112,54 @@ class HotelCachingServiceTest {
         Page<HotelResponseDTO> result = cachingService.findHotelsByRoomTypeAndPriceNative("DELUXE", 100.0, 0, 10);
 
         assertThat(result).isSameAs(cachedPage);
+        verify(hotelCache).get(key);
+        verify(hotelRepository, never()).findHotelIdsByRoomTypeAndPriceNative(any(), any(), any());
     }
 
     @Test
-    void findHotelsByRoomTypeAndPriceNative_ShouldFetchAndCache_WhenMiss() {
+    void findHotelsByRoomTypeAndPriceNative_ShouldFetchAndCache_WhenMissAndIdsNotEmpty() {
         HotelSearchKey key = new HotelSearchKey("DELUXE", 100.0, null, 0, 10, "name-native");
         when(hotelCache.get(key)).thenReturn(null);
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Long> idsPage = new PageImpl<>(List.of(1L), pageable, 1);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("name").ascending());
+        Page<Long> idsPage = new PageImpl<>(List.of(1L, 2L), pageable, 2);
         when(hotelRepository.findHotelIdsByRoomTypeAndPriceNative("DELUXE", 100.0, pageable))
                 .thenReturn(idsPage);
-        when(hotelRepository.findAllWithDetailsByIds(List.of(1L))).thenReturn(List.of(hotel));
-        when(hotelMapper.toResponseDTO(hotel)).thenReturn(responseDTO);
+
+        Hotel hotel1 = new Hotel();
+        hotel1.setId(1L);
+        hotel1.setName("Hotel 1");
+        Hotel hotel2 = new Hotel();
+        hotel2.setId(2L);
+        hotel2.setName("Hotel 2");
+        List<Hotel> hotels = List.of(hotel1, hotel2);
+        when(hotelRepository.findAllWithDetailsByIds(List.of(1L, 2L))).thenReturn(hotels);
+        when(hotelMapper.toResponseDTO(any(Hotel.class))).thenReturn(new HotelResponseDTO());
 
         Page<HotelResponseDTO> result = cachingService.findHotelsByRoomTypeAndPriceNative("DELUXE", 100.0, 0, 10);
 
         assertThat(result).isNotNull();
-        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent()).hasSize(2);
         verify(hotelCache).put(eq(key), any(Page.class));
     }
 
     @Test
-    void findHotelsByRoomTypeAndPriceNative_ShouldReturnEmptyPage_WhenNoIds() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Long> emptyPage = new PageImpl<>(Collections.emptyList(), pageable, 0);
+    void findHotelsByRoomTypeAndPriceNative_ShouldReturnEmptyPage_WhenIdsPageEmpty() {
+        HotelSearchKey key = new HotelSearchKey("DELUXE", 100.0, null, 0, 10, "name-native");
+        when(hotelCache.get(key)).thenReturn(null);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("name").ascending());
+        Page<Long> emptyIdsPage = new PageImpl<>(Collections.emptyList(), pageable, 0);
         when(hotelRepository.findHotelIdsByRoomTypeAndPriceNative("DELUXE", 100.0, pageable))
-                .thenReturn(emptyPage);
+                .thenReturn(emptyIdsPage);
 
         Page<HotelResponseDTO> result = cachingService.findHotelsByRoomTypeAndPriceNative("DELUXE", 100.0, 0, 10);
 
         assertThat(result).isEmpty();
+        verify(hotelCache).put(eq(key), any(Page.class));
         verify(hotelRepository, never()).findAllWithDetailsByIds(any());
     }
 
     @Test
-    void invalidateByHotelId_ShouldClearCache() {
+    void invalidateByHotelId_ShouldClearCacheByHotelId() {
         cachingService.invalidateByHotelId(1L);
         verify(hotelCache).clearByHotelId(1L);
     }

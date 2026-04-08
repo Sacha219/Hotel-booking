@@ -3,7 +3,6 @@ package com.example.hotelbooking.service;
 import com.example.hotelbooking.dto.AmenityDTO;
 import com.example.hotelbooking.entity.Amenity;
 import com.example.hotelbooking.entity.Room;
-import com.example.hotelbooking.mapper.AmenityMapper;
 import com.example.hotelbooking.repository.AmenityRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
