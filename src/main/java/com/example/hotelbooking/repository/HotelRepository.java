@@ -2,6 +2,7 @@ package com.example.hotelbooking.repository;
 
 import com.example.hotelbooking.entity.Hotel;
 import jakarta.annotation.Nonnull;
+import jakarta.persistence.OrderBy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -23,6 +24,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     List<Hotel> findByCityIgnoreCaseAndStars(String city, Integer stars);
 
     @Override
+    @OrderBy("id ASC")
     @Nonnull
     @EntityGraph(attributePaths = {"rooms", "amenities"})
     List<Hotel> findAll();
