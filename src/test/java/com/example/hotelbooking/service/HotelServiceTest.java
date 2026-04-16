@@ -5,7 +5,6 @@ import com.example.hotelbooking.dto.HotelResponseDTO;
 import com.example.hotelbooking.entity.Hotel;
 import com.example.hotelbooking.mapper.HotelMapper;
 import com.example.hotelbooking.repository.HotelRepository;
-import com.example.hotelbooking.service.impl.HotelServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -38,7 +37,7 @@ class HotelServiceTest {
     private HotelCachingService hotelCachingService;
 
     @InjectMocks
-    private HotelServiceImpl hotelService;
+    private HotelService hotelService;
 
     private Hotel hotel;
     private HotelRequestDTO requestDTO;

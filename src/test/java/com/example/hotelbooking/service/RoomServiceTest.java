@@ -149,6 +149,24 @@ class RoomServiceTest {
     }
 
     @Test
+    void update_WhenAvailableIsNull_ShouldKeepOldAvailable() {
+
+        RoomRequestDTO updateDto = new RoomRequestDTO();
+        updateDto.setNumber("202");
+        updateDto.setPrice(150.0);
+        updateDto.setAvailable(null);
+        updateDto.setHotelId(1L);
+
+        when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+        when(roomRepository.save(room)).thenReturn(room);
+
+        roomService.update(1L, updateDto);
+
+        assertThat(room.getAvailable()).isTrue();
+        verify(roomRepository).save(room);
+    }
+
+    @Test
     void delete_ShouldDelete_WhenExists() {
         when(roomRepository.existsById(1L)).thenReturn(true);
         doNothing().when(roomRepository).deleteById(1L);

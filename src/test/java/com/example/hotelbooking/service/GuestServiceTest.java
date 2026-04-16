@@ -10,6 +10,7 @@ import com.example.hotelbooking.repository.RoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -149,6 +150,27 @@ class GuestServiceTest {
     }
 
     @Test
+    void update_WhenEmailNotChanged_ShouldNotCheckExistence() {
+
+        GuestRequestDTO updateDto = new GuestRequestDTO();
+        updateDto.setFirstName("Jane");
+        updateDto.setLastName("Smith");
+        updateDto.setEmail("john@example.com");
+        updateDto.setPhone("987654321");
+
+        when(guestRepository.findById(1L)).thenReturn(Optional.of(guest));
+        when(guestRepository.save(guest)).thenReturn(guest);
+
+        GuestResponseDTO result = guestService.update(1L, updateDto);
+
+        assertThat(result).isNotNull();
+        assertThat(guest.getFirstName()).isEqualTo("Jane");
+        assertThat(guest.getEmail()).isEqualTo("john@example.com");
+        verify(guestRepository, never()).existsByEmailIgnoreCase(anyString());
+        verify(guestRepository).save(guest);
+    }
+
+    @Test
     void update_ShouldThrow_WhenEmailAlreadyExists() {
         GuestRequestDTO updateDto = new GuestRequestDTO();
         updateDto.setEmail("existing@example.com");
@@ -201,6 +223,37 @@ class GuestServiceTest {
 
         assertThat(result).isNotNull();
         verify(guestRepository).save(any(Guest.class));
+        verify(bookingRepository).saveAll(anyList());
+    }
+
+    @Test
+    void createGuestWithBookings_WhenStatusIsNull_ShouldSetDefaultPending() {
+
+        BookingRequestDTO bookingDto = new BookingRequestDTO();
+        bookingDto.setRoomId(1L);
+        bookingDto.setCheckInDate(LocalDate.now().plusDays(1));
+        bookingDto.setCheckOutDate(LocalDate.now().plusDays(3));
+        bookingDto.setStatus(null);
+
+        GuestWithBookingsDTO dto = new GuestWithBookingsDTO();
+        dto.setFirstName("John");
+        dto.setLastName("Doe");
+        dto.setEmail("john@example.com");
+        dto.setPhone("123");
+        dto.setBookings(List.of(bookingDto));
+
+        when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+        when(guestRepository.save(any(Guest.class))).thenReturn(guest);
+
+        ArgumentCaptor<List<Booking>> bookingCaptor = ArgumentCaptor.forClass(List.class);
+        when(bookingRepository.saveAll(bookingCaptor.capture())).thenReturn(List.of(new Booking()));
+
+        GuestResponseDTO result = guestService.createGuestWithBookings(dto);
+
+        assertThat(result).isNotNull();
+        List<Booking> savedBookings = bookingCaptor.getValue();
+        assertThat(savedBookings).hasSize(1);
+        assertThat(savedBookings.get(0).getStatus()).isEqualTo("PENDING");
         verify(bookingRepository).saveAll(anyList());
     }
 }

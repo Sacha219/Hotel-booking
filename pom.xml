@@ -128,19 +128,16 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <!-- JACOCO (ПОКРЫТИЕ) -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.12</version>
                 <executions>
-                    <!-- Подключает агент JaCoCo во время тестов -->
                     <execution>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-                    <!-- Генерирует XML-отчёт после тестов -->
                     <execution>
                         <id>report</id>
                         <phase>verify</phase>
