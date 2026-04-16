@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RaceConditionTest {
+class RaceConditionTest {
 
     private static final int THREAD_COUNT = 50;
     private static final int INCREMENTS_PER_THREAD = 1000;
