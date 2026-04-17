@@ -27,6 +27,7 @@ class RaceConditionTest {
                 for (int j = 0; j < INCREMENTS_PER_THREAD; j++) {
                     counter.increment();
                 }
+
                 latch.countDown();
             });
         }
