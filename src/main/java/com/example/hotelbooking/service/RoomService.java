@@ -32,7 +32,7 @@ public class RoomService {
     @Transactional(readOnly = true)
     public RoomResponseDTO findById(Long id) {
         Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Room not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException(" Room not found with id: " + id));
         return RoomMapper.toResponseDTO(room);
     }
 
@@ -53,7 +53,7 @@ public class RoomService {
     @Transactional
     public RoomResponseDTO create(RoomRequestDTO dto) {
         Hotel hotel = hotelRepository.findById(dto.getHotelId())
-                .orElseThrow(() -> new NoSuchElementException("Hotel not found with id: " + dto.getHotelId()));
+                .orElseThrow(() -> new NoSuchElementException("Hotel not found with id:  " + dto.getHotelId()));
 
         Room room = RoomMapper.toEntity(dto);
         room.setHotel(hotel);
@@ -82,7 +82,7 @@ public class RoomService {
     @Transactional
     public void delete(Long id) {
         if (!roomRepository.existsById(id)) {
-            throw new NoSuchElementException("Room not found with id:  " + id);
+            throw new NoSuchElementException("Room not found  with id: " + id);
         }
         roomRepository.deleteById(id);
     }
