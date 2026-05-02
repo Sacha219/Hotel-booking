@@ -65,7 +65,7 @@ public class BookingService {
                 dto.getCheckInDate(), dto.getCheckOutDate());
 
         boolean roomBooked = overlappingBookings.stream()
-                .filter(b -> !"CANCELLED".equalsIgnoreCase(b.getStatus()))
+                .filter(b -> !"CANCELLED ".equalsIgnoreCase(b.getStatus()))
                 .anyMatch(b -> b.getRoom().getId().equals(room.getId()));
 
         if (roomBooked) {
@@ -99,7 +99,7 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Booking not found  with id: " + id));
 
-        booking.setStatus("CANCELLED");
+        booking.setStatus(" CANCELLED");
         bookingRepository.save(booking);
     }
 
