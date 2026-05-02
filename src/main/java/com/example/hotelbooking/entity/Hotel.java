@@ -44,6 +44,9 @@ public class Hotel {
     @Column(length = 1000)
     private String description;
 
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl;
+
     private Boolean available = true;
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)

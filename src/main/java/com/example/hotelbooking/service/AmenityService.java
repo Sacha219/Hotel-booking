@@ -2,9 +2,12 @@ package com.example.hotelbooking.service;
 
 import com.example.hotelbooking.dto.AmenityDTO;
 import com.example.hotelbooking.entity.Amenity;
+import com.example.hotelbooking.entity.Hotel;
 import com.example.hotelbooking.entity.Room;
 import com.example.hotelbooking.mapper.AmenityMapper;
 import com.example.hotelbooking.repository.AmenityRepository;
+import com.example.hotelbooking.repository.HotelRepository;
+import com.example.hotelbooking.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,8 @@ import java.util.NoSuchElementException;
 public class AmenityService {
 
     private final AmenityRepository amenityRepository;
+    private final HotelRepository hotelRepository;
+    private final RoomRepository roomRepository;
 
     @Transactional(readOnly = true)
     public List<AmenityDTO> findAll() {
@@ -68,11 +73,55 @@ public class AmenityService {
         Amenity amenity = amenityRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Amenity not found"));
 
+        for (Hotel hotel : hotelRepository.findAll()) {
+            hotel.getAmenities().remove(amenity);
+        }
+
         for (Room room : amenity.getRooms()) {
             room.getAmenities().remove(amenity);
         }
         amenity.getRooms().clear();
 
         amenityRepository.delete(amenity);
+    }
+
+    @Transactional
+    public void addAmenityToHotel(Long amenityId, Long hotelId) {
+        Amenity amenity = amenityRepository.findById(amenityId)
+                .orElseThrow(() -> new NoSuchElementException("Amenity not found"));
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new NoSuchElementException("Hotel not found"));
+        hotel.getAmenities().add(amenity);
+        hotelRepository.save(hotel);
+    }
+
+    @Transactional
+    public void addAmenityToRoom(Long amenityId, Long roomId) {
+        Amenity amenity = amenityRepository.findById(amenityId)
+                .orElseThrow(() -> new NoSuchElementException("Amenity not found"));
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NoSuchElementException("Room not found"));
+        room.getAmenities().add(amenity);
+        roomRepository.save(room);
+    }
+
+    @Transactional
+    public void removeAmenityFromHotel(Long amenityId, Long hotelId) {
+        Amenity amenity = amenityRepository.findById(amenityId)
+                .orElseThrow(() -> new NoSuchElementException("Amenity not found"));
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new NoSuchElementException("Hotel not found"));
+        hotel.getAmenities().remove(amenity);
+        hotelRepository.save(hotel);
+    }
+
+    @Transactional
+    public void removeAmenityFromRoom(Long amenityId, Long roomId) {
+        Amenity amenity = amenityRepository.findById(amenityId)
+                .orElseThrow(() -> new NoSuchElementException("Amenity not found"));
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NoSuchElementException("Room not found"));
+        room.getAmenities().remove(amenity);
+        roomRepository.save(room);
     }
 }

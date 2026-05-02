@@ -53,18 +53,23 @@ public class BookingService {
         Guest guest = guestRepository.findById(dto.getGuestId())
                 .orElseThrow(() -> new NoSuchElementException("Guest not found with id: " + dto.getGuestId()));
 
+        if (!dto.getCheckOutDate().isAfter(dto.getCheckInDate())) {
+            throw new IllegalArgumentException("Дата выезда должна быть позже даты заезда");
+        }
+
         if (!room.getAvailable()) {
-            throw new IllegalStateException("Room is not available for booking");
+            throw new IllegalStateException("Номер недоступен для бронирования");
         }
 
         List<Booking> overlappingBookings = bookingRepository.findOverlappingBookings(
                 dto.getCheckInDate(), dto.getCheckOutDate());
 
         boolean roomBooked = overlappingBookings.stream()
+                .filter(b -> !"CANCELLED".equalsIgnoreCase(b.getStatus()))
                 .anyMatch(b -> b.getRoom().getId().equals(room.getId()));
 
         if (roomBooked) {
-            throw new IllegalStateException("Room is already booked for these dates");
+            throw new IllegalStateException("Этот номер уже занят на выбранные даты");
         }
 
         Booking booking = BookingMapper.toEntity(dto);
@@ -96,5 +101,17 @@ public class BookingService {
 
         booking.setStatus("CANCELLED");
         bookingRepository.save(booking);
+    }
+
+    @Transactional
+    public void deleteCancelled(Long id) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Booking not found with id: " + id));
+
+        if (!"CANCELLED".equalsIgnoreCase(booking.getStatus())) {
+            throw new IllegalStateException("Удалить можно только отмененное бронирование");
+        }
+
+        bookingRepository.delete(booking);
     }
 }

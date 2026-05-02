@@ -44,6 +44,9 @@ public class Room {
 
     private Double price;
 
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl;
+
     private Boolean available = true;
 
     @ManyToOne

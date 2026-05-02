@@ -39,6 +39,9 @@ public class HotelRequestDTO {
     @Size(max = 500, message = "Описание не должно превышать 500 символов")
     private String description;
 
+    @Schema(description = "Ссылка на фото отеля или data URL")
+    private String imageUrl;
+
     @Schema(description = "Цена за ночь", example = "150.0", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "Цена за ночь обязательна")
     @DecimalMin(value = "0.0", inclusive = false, message = "Цена должна быть больше 0")

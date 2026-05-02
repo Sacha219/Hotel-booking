@@ -2,6 +2,7 @@ package com.example.hotelbooking.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +18,7 @@ public class BookingRequestDTO {
 
     @Schema(description = "Дата заезда", example = "2026-05-10", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "Дата заезда обязательна")
-    @Future(message = "Дата заезда должна быть в будущем")
+    @FutureOrPresent(message = "Дата заезда должна быть сегодня или в будущем")
     private LocalDate checkInDate;
 
     @Schema(description = "Дата выезда", example = "2026-05-15", requiredMode = Schema.RequiredMode.REQUIRED)

@@ -72,6 +72,7 @@ public class RoomService {
         room.setCapacity(dto.getCapacity());
         room.setType(dto.getType());
         room.setPrice(dto.getPrice());
+        room.setImageUrl(dto.getImageUrl());
         room.setAvailable(dto.getAvailable() != null ? dto.getAvailable() : room.getAvailable());
 
         Room updatedRoom = roomRepository.save(room);

@@ -16,6 +16,7 @@ public class HotelResponseDTO {
     private String city;
     private Integer stars;
     private String description;
+    private String imageUrl;
     private Boolean available;
     private List<Long> roomIds;
     private List<Long> amenityIds;

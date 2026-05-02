@@ -15,6 +15,7 @@ public class RoomResponseDTO {
     private Integer capacity;
     private String type;
     private Double price;
+    private String imageUrl;
     private Boolean available;
     private Long hotelId;
     private String hotelName;

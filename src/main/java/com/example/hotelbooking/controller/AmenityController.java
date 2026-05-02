@@ -69,4 +69,44 @@ public class AmenityController {
         amenityService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Привязать удобство к отелю",
+            description = "Добавляет существующее удобство к отелю по ID")
+    @PostMapping("/{amenityId}/hotel/{hotelId}")
+    public ResponseEntity<AmenityDTO> addAmenityToHotel(
+            @Parameter(description = "ID удобства") @PathVariable Long amenityId,
+            @Parameter(description = "ID отеля") @PathVariable Long hotelId) {
+        amenityService.addAmenityToHotel(amenityId, hotelId);
+        return ResponseEntity.ok(amenityService.findById(amenityId));
+    }
+
+    @Operation(summary = "Привязать удобство к номеру",
+            description = "Добавляет существующее удобство к номеру по ID")
+    @PostMapping("/{amenityId}/room/{roomId}")
+    public ResponseEntity<AmenityDTO> addAmenityToRoom(
+            @Parameter(description = "ID удобства") @PathVariable Long amenityId,
+            @Parameter(description = "ID номера") @PathVariable Long roomId) {
+        amenityService.addAmenityToRoom(amenityId, roomId);
+        return ResponseEntity.ok(amenityService.findById(amenityId));
+    }
+
+    @Operation(summary = "Отвязать удобство от отеля",
+            description = "Удаляет связь удобства с отелем по ID")
+    @DeleteMapping("/{amenityId}/hotel/{hotelId}")
+    public ResponseEntity<Void> removeAmenityFromHotel(
+            @Parameter(description = "ID удобства") @PathVariable Long amenityId,
+            @Parameter(description = "ID отеля") @PathVariable Long hotelId) {
+        amenityService.removeAmenityFromHotel(amenityId, hotelId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Отвязать удобство от номера",
+            description = "Удаляет связь удобства с номером по ID")
+    @DeleteMapping("/{amenityId}/room/{roomId}")
+    public ResponseEntity<Void> removeAmenityFromRoom(
+            @Parameter(description = "ID удобства") @PathVariable Long amenityId,
+            @Parameter(description = "ID номера") @PathVariable Long roomId) {
+        amenityService.removeAmenityFromRoom(amenityId, roomId);
+        return ResponseEntity.noContent().build();
+    }
 }

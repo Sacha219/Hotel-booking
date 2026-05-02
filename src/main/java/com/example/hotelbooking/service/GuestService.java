@@ -108,6 +108,10 @@ public class GuestService {
             Room room = roomRepository.findById(bookingDTO.getRoomId())
                     .orElseThrow(() -> new RuntimeException("Room not found"));
 
+            if (!bookingDTO.getCheckOutDate().isAfter(bookingDTO.getCheckInDate())) {
+                throw new IllegalArgumentException("Дата выезда должна быть позже даты заезда");
+            }
+
             Booking booking = new Booking();
             booking.setCheckInDate(bookingDTO.getCheckInDate());
             booking.setCheckOutDate(bookingDTO.getCheckOutDate());

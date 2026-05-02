@@ -87,6 +87,7 @@ public class HotelService {
         hotel.setCity(hotelRequestDTO.getCity());
         hotel.setStars(hotelRequestDTO.getStars());
         hotel.setDescription(hotelRequestDTO.getDescription());
+        hotel.setImageUrl(hotelRequestDTO.getImageUrl());
         hotel.setAvailable(hotelRequestDTO.getAvailable() != null ? hotelRequestDTO.getAvailable() : hotel.getAvailable());
 
         Hotel updatedHotel = hotelRepository.save(hotel);

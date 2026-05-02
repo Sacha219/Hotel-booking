@@ -24,6 +24,7 @@ public class HotelMapper {
         dto.setCity(hotel.getCity());
         dto.setStars(hotel.getStars());
         dto.setDescription(hotel.getDescription());
+        dto.setImageUrl(hotel.getImageUrl());
         dto.setAvailable(hotel.getAvailable());
 
         try {
@@ -59,6 +60,7 @@ public class HotelMapper {
         hotel.setCity(dto.getCity());
         hotel.setStars(dto.getStars());
         hotel.setDescription(dto.getDescription());
+        hotel.setImageUrl(dto.getImageUrl());
         hotel.setAvailable(dto.getAvailable() == null || dto.getAvailable());
 
         return hotel;

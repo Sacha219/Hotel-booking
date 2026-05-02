@@ -36,6 +36,9 @@ public class RoomRequestDTO {
     @Positive(message = "Цена должна быть больше 0")
     private Double price;
 
+    @Schema(description = "Room image URL or data URL")
+    private String imageUrl;
+
     @Schema(description = "Доступность", example = "true")
     private Boolean available;
 

@@ -25,6 +25,7 @@ public class RoomMapper {
         dto.setCapacity(room.getCapacity());
         dto.setType(room.getType());
         dto.setPrice(room.getPrice());
+        dto.setImageUrl(room.getImageUrl());
         dto.setAvailable(room.getAvailable());
 
         if (room.getHotel() != null) {
@@ -58,6 +59,7 @@ public class RoomMapper {
         room.setCapacity(dto.getCapacity());
         room.setType(dto.getType());
         room.setPrice(dto.getPrice());
+        room.setImageUrl(dto.getImageUrl());
         room.setAvailable(dto.getAvailable() == null || dto.getAvailable());
 
         return room;
