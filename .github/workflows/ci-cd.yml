@@ -3,10 +3,10 @@ name: CI/CD
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 permissions:
@@ -116,7 +116,7 @@ jobs:
     name: Deploy to Render
     runs-on: ubuntu-latest
     needs: docker-build
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
     environment:
       name: production
       url: ${{ vars.APP_URL }}
@@ -142,7 +142,7 @@ jobs:
     name: Production healthcheck
     runs-on: ubuntu-latest
     needs: deploy
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
     env:
       APP_HEALTH_URL: ${{ vars.APP_HEALTH_URL }}
     steps:
