@@ -14,18 +14,31 @@ services:
     autoDeployTrigger: off
     healthCheckPath: /actuator/health
     envVars:
-      - key: DATABASE_URL
+      # Порт, который Render назначает автоматически (обычно 10000)
+      - key: PORT
+        value: "10000"
+      # Компоненты подключения к БД – Render подставит их из базы
+      - key: DB_HOST
         fromDatabase:
           name: royalstay-db
-          property: connectionString
-      - key: SPRING_DATASOURCE_USERNAME
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: royalstay-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: royalstay-db
+          property: database
+      - key: DB_USER
         fromDatabase:
           name: royalstay-db
           property: user
-      - key: SPRING_DATASOURCE_PASSWORD
+      - key: DB_PASSWORD
         fromDatabase:
           name: royalstay-db
           property: password
+      # Дополнительные настройки Spring
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: update
       - key: SPRING_JPA_SHOW_SQL
