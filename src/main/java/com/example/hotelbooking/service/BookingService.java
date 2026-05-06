@@ -99,7 +99,7 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Booking not found  with id: " + id));
 
-        booking.setStatus("CANCELLED");
+        booking.setStatus(" CANCELLED");
         bookingRepository.save(booking);
     }
 
@@ -108,7 +108,7 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Booking not found with id: " + id));
 
-        if (!"CANCELLED".equalsIgnoreCase(booking.getStatus())) {
+        if (!"CANCELLED ".equalsIgnoreCase(booking.getStatus())) {
             throw new IllegalStateException("Удалить можно только отмененное бронирование");
         }
 
