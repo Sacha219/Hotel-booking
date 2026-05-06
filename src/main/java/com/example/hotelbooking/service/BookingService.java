@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class BookingService {
 
+    public static final String CANCELLED = "CANCELLED";
     private final BookingRepository bookingRepository;
     private final RoomRepository roomRepository;
     private final GuestRepository guestRepository;
@@ -66,7 +67,7 @@ public class BookingService {
                 dto.getCheckInDate(), dto.getCheckOutDate());
 
         boolean roomBooked = overlappingBookings.stream()
-                .filter(b -> b.getStatus() == null || !"CANCELLED".equalsIgnoreCase(b.getStatus().trim()))
+                .filter(b -> b.getStatus() == null || !CANCELLED.equalsIgnoreCase(b.getStatus().trim()))
                 .anyMatch(b -> b.getRoom().getId().equals(room.getId()));
 
         if (roomBooked) {
@@ -100,7 +101,7 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Booking not found  with id: " + id));
 
-        booking.setStatus("CANCELLED");
+        booking.setStatus(CANCELLED);
         bookingRepository.save(booking);
     }
 
@@ -109,7 +110,7 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Booking not found with id: " + id));
 
-        if (!"CANCELLED".equalsIgnoreCase(booking.getStatus())) {
+        if (!CANCELLED.equalsIgnoreCase(booking.getStatus())) {
             throw new IllegalStateException("Удалить можно только отмененное бронирование");
         }
 
