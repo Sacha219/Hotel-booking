@@ -27,6 +27,20 @@
         </sonar.inclusions>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>skip-jacoco-on-windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <jacoco.skip>true</jacoco.skip>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

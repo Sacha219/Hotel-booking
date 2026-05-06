@@ -58,18 +58,18 @@ public class BookingService {
         }
 
         if (!room.getAvailable()) {
-            throw new IllegalStateException("Номер недоступен для бронирования");
+            throw new IllegalStateException("Room not available for booking");
         }
 
         List<Booking> overlappingBookings = bookingRepository.findOverlappingBookings(
                 dto.getCheckInDate(), dto.getCheckOutDate());
 
         boolean roomBooked = overlappingBookings.stream()
-                .filter(b -> !"CANCELLED ".equalsIgnoreCase(b.getStatus()))
+                .filter(b -> b.getStatus() == null || !"CANCELLED".equalsIgnoreCase(b.getStatus().trim()))
                 .anyMatch(b -> b.getRoom().getId().equals(room.getId()));
 
         if (roomBooked) {
-            throw new IllegalStateException("Этот номер уже занят на выбранные даты");
+            throw new IllegalStateException("Room already booked for selected dates");
         }
 
         Booking booking = BookingMapper.toEntity(dto);
@@ -99,7 +99,7 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Booking not found  with id: " + id));
 
-        booking.setStatus(" CANCELLED");
+        booking.setStatus("CANCELLED");
         bookingRepository.save(booking);
     }
 

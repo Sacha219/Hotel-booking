@@ -4,6 +4,8 @@ import com.example.hotelbooking.dto.AmenityDTO;
 import com.example.hotelbooking.entity.Amenity;
 import com.example.hotelbooking.entity.Room;
 import com.example.hotelbooking.repository.AmenityRepository;
+import com.example.hotelbooking.repository.HotelRepository;
+import com.example.hotelbooking.repository.RoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +28,12 @@ class AmenityServiceTest {
 
     @Mock
     private AmenityRepository amenityRepository;
+
+    @Mock
+    private HotelRepository hotelRepository;
+
+    @Mock
+    private RoomRepository roomRepository;
 
     @InjectMocks
     private AmenityService amenityService;
