@@ -3,7 +3,7 @@
 ## Local Docker Compose
 
 1. Copy `.env.example` to `.env` and change `POSTGRES_PASSWORD`.
-2. Start the stack:
+2. Start the stack: 
 
 ```bash
 docker compose up --build
