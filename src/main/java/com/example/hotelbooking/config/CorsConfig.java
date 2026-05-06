@@ -13,7 +13,8 @@ public class CorsConfig implements WebMvcConfigurer {
                         "http://localhost:5173",
                         "http://localhost:3000",
                         "http://localhost:80",
-                        "http://localhost"
+                        "http://localhost",
+                        "https://royalstay-frontend.onrender.com"
                 )
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*");
