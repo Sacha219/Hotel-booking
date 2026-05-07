@@ -24,20 +24,20 @@ jobs:
       postgres:
         image: postgres:17-alpine
         env:
-          POSTGRES_DB: royalstay
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U postgres -d royalstay"
+          --health-cmd "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
     env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/royalstay
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/${{ secrets.POSTGRES_DB }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.POSTGRES_USER }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
       SPRING_JPA_SHOW_SQL: "false"
       CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:5173,http://localhost
