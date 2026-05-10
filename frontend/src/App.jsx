@@ -2542,6 +2542,14 @@ function App() {
      className={`nav-menu ${menuOpen ? 'open' : ''}`}
      aria-label="Разделы RoyalStay"
    >
+      <button
+               className="close-panel"
+               type="button"
+               aria-label="Закрыть меню"
+               onClick={() => setMenuOpen(false)}
+             >
+               ×
+             </button>
      {visibleTabs.map((tab) => (
        <button
          key={tab.id}
@@ -2566,7 +2574,7 @@ function App() {
      </button>
    </div>
  </header>
-
+ <div className={`menu-overlay ${menuOpen ? 'active' : ''}`} onClick={() => setMenuOpen(false)} />
       {authUser.role === 'USER' && activeTab === 'search' && (
         <section className="trip-hero" id="top">
           <img src={hotelPhoto} alt="Отели RoyalStay" />

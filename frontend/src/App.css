@@ -2130,81 +2130,23 @@ textarea:focus {
 }
 
 @media (max-width: 780px) {
- /* ---------- ВЕРХНЯЯ ПАНЕЛЬ (бургер) ---------- */
-   .topbar,
-   .auth-topbar {
-     flex-wrap: wrap;
-     align-items: center;
-     justify-content: space-between;
-     gap: 10px;
-     padding: 10px 18px;
-   }
+ .topbar,
+  .auth-topbar,
+  .section-heading,
+  .detail-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 
-   /* Показываем бургер */
-   .burger-button {
-     display: block;
-     order: 2;
-   }
+  .tabs,
+  .auth-links,
+  .account-area {
+    justify-content: flex-start;
+  }
 
-   /* Скрываем обычное горизонтальное меню, показываем раскрывающееся */
-   .tabs,
-   .auth-links {
-     display: none;
-   }
-
-   .nav-menu {
-     display: none;
-     order: 3;
-     width: 100%;
-     flex-direction: column;
-     background: #fff;
-     border: 1px solid var(--line);
-     border-radius: 8px;
-     box-shadow: var(--shadow-soft);
-     padding: 8px;
-     gap: 4px;
-   }
-
-   .nav-menu.open {
-     display: flex;
-   }
-
-   .nav-menu .tab {
-     text-align: left;
-     width: 100%;
-     padding: 10px 14px;
-     border: 1px solid transparent;
-     border-radius: 6px;
-     min-height: 36px;
-   }
-
-   .nav-menu .tab:hover,
-   .nav-menu .tab.active {
-     background: var(--blue-soft);
-     border-color: rgba(79, 178, 233, 0.24);
-   }
-
-   /* Блок аккаунта – справа от бургера */
-   .account-area {
-     order: 2;
-     display: flex;
-     align-items: center;
-     gap: 8px;
-     margin-left: 0;
-     justify-content: flex-end;
-   }
-
-   .account-chip {
-     max-width: 140px;
-     font-size: 12px;
-     padding: 6px 10px;
-     white-space: nowrap;
-   }
-
-   .logout-button {
-     font-size: 13px;
-     padding: 6px 12px;
-   }
+  .auth-links {
+    display: none;
+  }
 
   .auth-hero {
     min-height: auto;
@@ -2291,22 +2233,104 @@ textarea:focus {
     padding: 18px;
   }
 
-  /* ====== БУРГЕР-МЕНЮ ====== */
-  .burger-button {
-    display: none;               /* скрыто на больших экранах */
-    background: none;
-    border: none;
-    font-size: 28px;
-    cursor: pointer;
-    color: var(--blue-strong);
-    line-height: 1;
-    padding: 0 8px;
-  }
+ /* ==================================================
+    БОКОВАЯ ПАНЕЛЬ (off‑canvas справа)
+    ================================================== */
 
-  .nav-menu {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-  }
+ /* Кнопка‑бургер (скрыта на десктопе) */
+ .burger-button {
+   display: none;
+   background: none;
+   border: none;
+   font-size: 2rem;
+   cursor: pointer;
+   color: var(--blue-strong);
+   line-height: 1;
+   padding: 0.25rem 0.5rem;
+ }
+
+ /* === Боковая панель === */
+ .nav-menu {
+   position: fixed;
+   top: 0;
+   right: 0;
+   z-index: 200;
+   width: min(280px, 80vw);
+   height: 100vh;
+   background: #ffffff;
+   box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+   transform: translateX(100%);
+   transition: transform 0.3s ease;
+   display: flex;
+   flex-direction: column;
+   padding: 2rem 1.5rem;
+   gap: 1rem;
+   overflow-y: auto;
+ }
+
+ .nav-menu.open {
+   transform: translateX(0);
+ }
+
+ /* Кнопка закрытия внутри панели */
+ .nav-menu .close-panel {
+   align-self: flex-end;
+   background: none;
+   border: none;
+   font-size: 2rem;
+   cursor: pointer;
+   color: var(--muted);
+   line-height: 1;
+   padding: 0;
+   margin-bottom: 1.5rem;
+ }
+
+ /* Затемнение фона при открытом меню */
+ .menu-overlay {
+   position: fixed;
+   inset: 0;
+   z-index: 199;
+   background: rgba(0,0,0,0.35);
+   opacity: 0;
+   pointer-events: none;
+   transition: opacity 0.25s ease;
+ }
+
+ .menu-overlay.active {
+   opacity: 1;
+   pointer-events: auto;
+ }
+
+ /* На десктопе боковая панель не нужна, меню встроено в topbar */
+ @media (min-width: 781px) {
+   .nav-menu {
+     position: static;
+     height: auto;
+     width: auto;
+     background: transparent;
+     box-shadow: none;
+     transform: none;
+     flex-direction: row;
+     padding: 0;
+     gap: 8px;
+   }
+
+   .menu-overlay {
+     display: none;
+   }
+ }
+
+ /* На мобильных скрываем обычные tabs и auth‑links, показываем бургер */
+ @media (max-width: 780px) {
+   .burger-button {
+     display: block;
+   }
+
+   .tabs,
+   .auth-links {
+     display: none;
+   }
+
+   /* Панель по умолчанию скрыта (transform), показывается через .open */
+ }
 }
