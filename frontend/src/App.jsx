@@ -2557,7 +2557,6 @@ function App() {
          type="button"
          onClick={() => {
            setActiveTab(tab.id);
-           setMenuOpen(false);   // закрываем меню после выбора
          }}
        >
          {tab.label}
