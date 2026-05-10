@@ -2130,23 +2130,7 @@ textarea:focus {
 }
 
 @media (max-width: 780px) {
- .topbar,
-  .auth-topbar,
-  .section-heading,
-  .detail-toolbar {
-    align-items: flex-start;
-    flex-direction: column;
-  }
 
-  .tabs,
-  .auth-links,
-  .account-area {
-    justify-content: flex-start;
-  }
-
-  .auth-links {
-    display: none;
-  }
 
   .auth-hero {
     min-height: auto;
@@ -2223,10 +2207,6 @@ textarea:focus {
     height: 220px;
     min-height: 220px;
     max-height: 220px;
-  }
-
-  .account-chip {
-    max-width: 100%;
   }
 
   .entity-modal {
