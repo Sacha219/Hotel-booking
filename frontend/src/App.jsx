@@ -2557,6 +2557,7 @@ function App() {
          type="button"
          onClick={() => {
            setActiveTab(tab.id);
+           setMenuOpen(false);
          }}
        >
          {tab.label}
