@@ -414,6 +414,7 @@ function serializeImageUrls(images) {
 }
 
 function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
   const [authUser, setAuthUser] = useState(() => readJson(SESSION_KEY, null))
   const [authMode, setAuthMode] = useState('login')
   const [authError, setAuthError] = useState('')
@@ -503,7 +504,7 @@ function App() {
     favorites: 1,
     userRooms: 1,
   })
-
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
   const loadAll = useCallback(async () => {
     setLoading(true)
     setError('')
@@ -2517,35 +2518,54 @@ function App() {
           setNotice('')
         }}
       />
-      <header className="topbar">
-        <a className="brand" href="#top" aria-label="RoyalStay">
-          <span className="brand-mark">R</span>
-          <span>
-            <strong>RoyalStay</strong>
-            <small>{authUser.role === 'ADMIN' ? 'Отели и апартаменты' : 'Отели и апартаменты'}</small>
-          </span>
-        </a>
-        <nav className="tabs" aria-label="Разделы RoyalStay">
-          {visibleTabs.map((tab) => (
-            <button
-              key={tab.id}
-              className={activeTab === tab.id ? 'tab active' : 'tab'}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
-        <div className="account-area">
-          <span className="account-chip">
-            {authUser.role === 'ADMIN' ? 'Админ' : 'Пользователь'} · {authUser.firstName}
-          </span>
-          <button className="logout-button" type="button" onClick={logout}>
-            Выйти
-          </button>
-        </div>
-      </header>
+ <header className="topbar">
+   <a className="brand" href="#top" aria-label="RoyalStay">
+     <span className="brand-mark">R</span>
+     <span>
+       <strong>RoyalStay</strong>
+       <small>{authUser.role === 'ADMIN' ? 'Отели и апартаменты' : 'Отели и апартаменты'}</small>
+     </span>
+   </a>
+
+   {/* Бургер-кнопка (видна только на мобильных) */}
+   <button
+     className="burger-button"
+     type="button"
+     aria-label="Открыть меню"
+     onClick={toggleMenu}
+   >
+     ☰
+   </button>
+
+   {/* Навигация (горизонтальная на десктопе, выпадающая на мобильных) */}
+   <nav
+     className={`nav-menu ${menuOpen ? 'open' : ''}`}
+     aria-label="Разделы RoyalStay"
+   >
+     {visibleTabs.map((tab) => (
+       <button
+         key={tab.id}
+         className={activeTab === tab.id ? 'tab active' : 'tab'}
+         type="button"
+         onClick={() => {
+           setActiveTab(tab.id);
+           setMenuOpen(false);   // закрываем меню после выбора
+         }}
+       >
+         {tab.label}
+       </button>
+     ))}
+   </nav>
+
+   <div className="account-area">
+     <span className="account-chip">
+       {authUser.role === 'ADMIN' ? 'Админ' : 'Пользователь'} · {authUser.firstName}
+     </span>
+     <button className="logout-button" type="button" onClick={logout}>
+       Выйти
+     </button>
+   </div>
+ </header>
 
       {authUser.role === 'USER' && activeTab === 'search' && (
         <section className="trip-hero" id="top">

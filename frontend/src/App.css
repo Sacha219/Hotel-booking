@@ -2130,23 +2130,81 @@ textarea:focus {
 }
 
 @media (max-width: 780px) {
-  .topbar,
-  .auth-topbar,
-  .section-heading,
-  .detail-toolbar {
-    align-items: flex-start;
-    flex-direction: column;
-  }
+ /* ---------- ВЕРХНЯЯ ПАНЕЛЬ (бургер) ---------- */
+   .topbar,
+   .auth-topbar {
+     flex-wrap: wrap;
+     align-items: center;
+     justify-content: space-between;
+     gap: 10px;
+     padding: 10px 18px;
+   }
 
-  .tabs,
-  .auth-links,
-  .account-area {
-    justify-content: flex-start;
-  }
+   /* Показываем бургер */
+   .burger-button {
+     display: block;
+     order: 2;
+   }
 
-  .auth-links {
-    display: none;
-  }
+   /* Скрываем обычное горизонтальное меню, показываем раскрывающееся */
+   .tabs,
+   .auth-links {
+     display: none;
+   }
+
+   .nav-menu {
+     display: none;
+     order: 3;
+     width: 100%;
+     flex-direction: column;
+     background: #fff;
+     border: 1px solid var(--line);
+     border-radius: 8px;
+     box-shadow: var(--shadow-soft);
+     padding: 8px;
+     gap: 4px;
+   }
+
+   .nav-menu.open {
+     display: flex;
+   }
+
+   .nav-menu .tab {
+     text-align: left;
+     width: 100%;
+     padding: 10px 14px;
+     border: 1px solid transparent;
+     border-radius: 6px;
+     min-height: 36px;
+   }
+
+   .nav-menu .tab:hover,
+   .nav-menu .tab.active {
+     background: var(--blue-soft);
+     border-color: rgba(79, 178, 233, 0.24);
+   }
+
+   /* Блок аккаунта – справа от бургера */
+   .account-area {
+     order: 2;
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     margin-left: 0;
+     justify-content: flex-end;
+   }
+
+   .account-chip {
+     max-width: 140px;
+     font-size: 12px;
+     padding: 6px 10px;
+     white-space: nowrap;
+   }
+
+   .logout-button {
+     font-size: 13px;
+     padding: 6px 12px;
+   }
 
   .auth-hero {
     min-height: auto;
@@ -2231,5 +2289,24 @@ textarea:focus {
 
   .entity-modal {
     padding: 18px;
+  }
+
+  /* ====== БУРГЕР-МЕНЮ ====== */
+  .burger-button {
+    display: none;               /* скрыто на больших экранах */
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: var(--blue-strong);
+    line-height: 1;
+    padding: 0 8px;
+  }
+
+  .nav-menu {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
   }
 }
