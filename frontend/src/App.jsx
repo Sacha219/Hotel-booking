@@ -2573,7 +2573,6 @@ function App() {
      </button>
    </div>
  </header>
- <div className={`menu-overlay ${menuOpen ? 'active' : ''}`} onClick={() => setMenuOpen(false)} />
       {authUser.role === 'USER' && activeTab === 'search' && (
         <section className="trip-hero" id="top">
           <img src={hotelPhoto} alt="Отели RoyalStay" />
